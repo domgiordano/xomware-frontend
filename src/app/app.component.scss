@@ -1,0 +1,264 @@
+@import 'styles/variables';
+
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: $bg-gradient;
+  padding: $spacing-xl $spacing-md;
+}
+
+// Hero
+.hero {
+  text-align: center;
+  padding-top: $spacing-2xl;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacing-md;
+}
+
+.painted-x {
+  width: 140px;
+  height: 140px;
+  filter: drop-shadow(0 0 20px rgba($brand-cyan, 0.3));
+  animation: float 4s ease-in-out infinite;
+}
+
+.brand-title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 12px;
+  background: $cyan-accent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: $spacing-sm;
+}
+
+.tagline {
+  color: $text-secondary;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: $brand-cyan;
+  transition: color $transition-base;
+
+  &:hover {
+    color: $brand-cyan-light;
+  }
+}
+
+.github-icon {
+  width: 16px;
+  height: 16px;
+}
+
+// Monster
+.monster-section {
+  padding: $spacing-xl 0;
+  display: flex;
+  justify-content: center;
+}
+
+// App Cards
+.apps-section {
+  width: 100%;
+  max-width: 900px;
+  padding: 0 $spacing-md;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-lg;
+}
+
+.app-card {
+  --app-color: #{$brand-cyan};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: $spacing-xl $spacing-lg;
+  background: $card-gradient;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: $radius-lg;
+  text-decoration: none;
+  color: $text-primary;
+  transition: all $transition-base;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--app-color);
+    opacity: 0;
+    transition: opacity $transition-base;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 0 30px color-mix(in srgb, var(--app-color) 20%, transparent);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .card-title {
+      color: var(--app-color);
+    }
+
+    .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: $spacing-md;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+  transition: color $transition-base;
+}
+
+.card-description {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin-bottom: $spacing-md;
+}
+
+.card-arrow {
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all $transition-base;
+  color: $text-muted;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// Footer
+.footer {
+  margin-top: auto;
+  padding: $spacing-xl 0 $spacing-md;
+  width: 100%;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.footer-text {
+  color: $text-muted;
+  font-size: 0.85rem;
+}
+
+.footer-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: $text-secondary;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color $transition-base;
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-xl;
+
+  &:hover {
+    color: $text-primary;
+    border-color: rgba($brand-cyan, 0.4);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+// Responsive
+@media (max-width: $breakpoint-md) {
+  .cards-container {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .painted-x {
+    width: 100px;
+    height: 100px;
+  }
+
+  .brand-title {
+    font-size: 2.2rem;
+    letter-spacing: 8px;
+  }
+
+  .hero {
+    padding-top: $spacing-lg;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .painted-x {
+    width: 80px;
+    height: 80px;
+  }
+
+  .brand-title {
+    font-size: 1.8rem;
+    letter-spacing: 6px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+}

@@ -1,0 +1,107 @@
+<div class="landing" (mousemove)="onPageInteraction()">
+  <!-- Hero Section -->
+  <header class="hero">
+    <!-- Painted X Logo -->
+    <div class="logo-container">
+      <svg class="painted-x" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="xGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00b4d8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#48cae4;stop-opacity:1" />
+          </linearGradient>
+          <filter id="xGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="paintTexture">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        <!-- Paint splatter background spots -->
+        <circle cx="35" cy="45" r="8" fill="url(#xGradient)" opacity="0.3" />
+        <circle cx="170" cy="55" r="5" fill="url(#xGradient)" opacity="0.25" />
+        <circle cx="155" cy="160" r="7" fill="url(#xGradient)" opacity="0.2" />
+        <circle cx="50" cy="165" r="4" fill="url(#xGradient)" opacity="0.3" />
+        <circle cx="100" cy="30" r="3" fill="url(#xGradient)" opacity="0.2" />
+        <!-- Drip from top-right stroke -->
+        <path d="M152 148 Q153 158 150 170 Q149 175 151 175 Q154 175 153 168 Q155 155 154 148Z"
+              fill="url(#xGradient)" opacity="0.6" filter="url(#paintTexture)" />
+        <!-- Drip from bottom-left stroke -->
+        <path d="M58 148 Q56 160 57 172 Q57 178 59 178 Q61 177 60 170 Q59 158 60 148Z"
+              fill="url(#xGradient)" opacity="0.5" filter="url(#paintTexture)" />
+        <!-- Main X strokes - brush style -->
+        <path d="M40 40 Q45 38 55 55 Q75 88 95 100 Q115 112 140 155 Q148 168 160 162 Q165 158 155 145 Q130 108 105 95 Q80 82 60 50 Q50 35 40 40Z"
+              fill="url(#xGradient)" filter="url(#xGlow)" />
+        <path d="M160 40 Q155 38 145 55 Q125 88 105 100 Q85 112 60 155 Q52 168 40 162 Q35 158 45 145 Q70 108 95 95 Q120 82 140 50 Q150 35 160 40Z"
+              fill="url(#xGradient)" filter="url(#xGlow)" />
+        <!-- Paint splash accents -->
+        <ellipse cx="38" cy="38" rx="6" ry="4" fill="url(#xGradient)" opacity="0.5" transform="rotate(-30 38 38)" />
+        <ellipse cx="162" cy="38" rx="5" ry="3" fill="url(#xGradient)" opacity="0.4" transform="rotate(30 162 38)" />
+        <ellipse cx="42" cy="165" rx="5" ry="3" fill="url(#xGradient)" opacity="0.4" transform="rotate(-15 42 165)" />
+        <ellipse cx="158" cy="165" rx="6" ry="3" fill="url(#xGradient)" opacity="0.5" transform="rotate(15 158 165)" />
+      </svg>
+    </div>
+    <h1 class="brand-title">XOMWARE</h1>
+    <p class="tagline">Apps built by
+      <a href="https://github.com/domgiordano" target="_blank" rel="noopener" class="github-link">
+        <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                fill="currentColor"/>
+        </svg>
+        @domgiordano
+      </a>
+    </p>
+  </header>
+
+  <!-- Monster Section -->
+  <section class="monster-section">
+    <app-monster [state]="monsterState"></app-monster>
+  </section>
+
+  <!-- App Cards Section -->
+  <section class="apps-section">
+    <div class="cards-container">
+      <a *ngFor="let app of apps"
+         class="app-card"
+         [style.--app-color]="app.color"
+         [href]="app.url"
+         target="_blank"
+         rel="noopener"
+         (mouseenter)="onCardHover(app.monsterState)"
+         (mouseleave)="onCardLeave()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path [attr.d]="app.icon" [attr.fill]="app.color"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">{{ app.name }}</h2>
+          <p class="card-description">{{ app.description }}</p>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <span class="footer-text">Built by @domgiordano</span>
+      <a href="https://github.com/domgiordano" target="_blank" rel="noopener" class="footer-github">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                fill="currentColor"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </footer>
+</div>

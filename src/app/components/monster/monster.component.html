@@ -1,0 +1,141 @@
+<div class="monster-wrapper" [ngClass]="state">
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="monster-svg">
+    <defs>
+      <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#1a2a3a;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#0d1520;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="bodyHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#2a3a4a;stop-opacity:0.6" />
+        <stop offset="100%" style="stop-color:#0d1520;stop-opacity:0" />
+      </linearGradient>
+      <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:#00b4d8;stop-opacity:0.15" />
+        <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0" />
+      </radialGradient>
+      <filter id="monsterGlow">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- Ambient glow -->
+    <ellipse cx="150" cy="200" rx="100" ry="30" fill="url(#glowGradient)" class="ambient-glow" />
+
+    <!-- Body -->
+    <g class="body-group">
+      <!-- Shadow -->
+      <ellipse cx="150" cy="235" rx="55" ry="10" fill="rgba(0,0,0,0.3)" class="shadow" />
+
+      <!-- Main body blob -->
+      <ellipse cx="150" cy="170" rx="65" ry="70" fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1.5" stroke-opacity="0.4" />
+      <ellipse cx="150" cy="170" rx="65" ry="70" fill="url(#bodyHighlight)" />
+
+      <!-- Left arm -->
+      <g class="left-arm">
+        <path d="M90 180 Q70 185 65 200 Q63 208 68 210 Q73 212 75 205 Q78 195 90 190Z"
+              fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1" stroke-opacity="0.3" />
+      </g>
+
+      <!-- Right arm -->
+      <g class="right-arm">
+        <path d="M210 180 Q230 185 235 200 Q237 208 232 210 Q227 212 225 205 Q222 195 210 190Z"
+              fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1" stroke-opacity="0.3" />
+      </g>
+
+      <!-- Left leg -->
+      <g class="left-leg">
+        <path d="M120 230 Q118 245 115 255 Q113 260 118 260 Q123 260 122 253 Q124 243 125 232Z"
+              fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1" stroke-opacity="0.3" />
+      </g>
+
+      <!-- Right leg -->
+      <g class="right-leg">
+        <path d="M180 230 Q182 245 185 255 Q187 260 182 260 Q177 260 178 253 Q176 243 175 232Z"
+              fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1" stroke-opacity="0.3" />
+      </g>
+
+      <!-- Eyes -->
+      <g class="eyes">
+        <!-- Left eye -->
+        <ellipse cx="130" cy="155" rx="18" ry="20" fill="#e8edf2" class="eye-white" />
+        <circle cx="132" cy="157" r="9" fill="#0d1520" class="pupil left-pupil" />
+        <circle cx="135" cy="153" r="3" fill="white" class="eye-shine" />
+
+        <!-- Right eye -->
+        <ellipse cx="170" cy="155" rx="18" ry="20" fill="#e8edf2" class="eye-white" />
+        <circle cx="172" cy="157" r="9" fill="#0d1520" class="pupil right-pupil" />
+        <circle cx="175" cy="153" r="3" fill="white" class="eye-shine" />
+      </g>
+
+      <!-- Eyelids (for blink/sleep) -->
+      <g class="eyelids">
+        <ellipse cx="130" cy="155" rx="19" ry="21" fill="url(#bodyGradient)" class="left-eyelid" />
+        <ellipse cx="170" cy="155" rx="19" ry="21" fill="url(#bodyGradient)" class="right-eyelid" />
+      </g>
+
+      <!-- Mouth -->
+      <g class="mouth">
+        <path d="M140 190 Q150 198 160 190" stroke="#4a5568" stroke-width="2.5" fill="none" stroke-linecap="round" class="mouth-line" />
+      </g>
+    </g>
+
+    <!-- Headphones (xomify state) -->
+    <g class="headphones-accessory">
+      <path d="M95 145 Q95 100 150 95 Q205 100 205 145" stroke="#9c0abf" stroke-width="5" fill="none" stroke-linecap="round" />
+      <rect x="80" y="140" width="22" height="30" rx="8" fill="#9c0abf" />
+      <rect x="198" y="140" width="22" height="30" rx="8" fill="#9c0abf" />
+      <rect x="83" y="143" width="16" height="24" rx="6" fill="#7a0896" />
+      <rect x="201" y="143" width="16" height="24" rx="6" fill="#7a0896" />
+    </g>
+
+    <!-- DJ Turntable (xomcloud state) -->
+    <g class="dj-accessory">
+      <!-- Turntable base -->
+      <rect x="70" y="220" width="160" height="60" rx="8" fill="#2a1a0a" stroke="#ff6b35" stroke-width="1.5" stroke-opacity="0.5" />
+      <!-- Left platter -->
+      <circle cx="120" cy="245" r="22" fill="#1a1a1a" stroke="#ff6b35" stroke-width="1" stroke-opacity="0.4" />
+      <circle cx="120" cy="245" r="15" fill="none" stroke="#333" stroke-width="0.5" />
+      <circle cx="120" cy="245" r="8" fill="none" stroke="#333" stroke-width="0.5" />
+      <circle cx="120" cy="245" r="3" fill="#ff6b35" class="platter-center" />
+      <!-- Right platter -->
+      <circle cx="180" cy="245" r="22" fill="#1a1a1a" stroke="#ff6b35" stroke-width="1" stroke-opacity="0.4" />
+      <circle cx="180" cy="245" r="15" fill="none" stroke="#333" stroke-width="0.5" />
+      <circle cx="180" cy="245" r="8" fill="none" stroke="#333" stroke-width="0.5" />
+      <circle cx="180" cy="245" r="3" fill="#ff6b35" class="platter-center" />
+      <!-- Crossfader -->
+      <rect x="142" y="260" width="16" height="6" rx="3" fill="#444" />
+      <rect x="147" y="259" width="6" height="8" rx="2" fill="#ff6b35" class="crossfader" />
+    </g>
+
+    <!-- Football Helmet (xomper state) -->
+    <g class="football-accessory">
+      <!-- Helmet shell -->
+      <path d="M95 145 Q95 95 150 90 Q205 95 205 145 Q205 155 195 155 L105 155 Q95 155 95 145Z"
+            fill="#0d3320" stroke="#00ffab" stroke-width="2" />
+      <!-- Facemask -->
+      <path d="M120 150 Q125 162 135 165 Q150 168 165 165 Q175 162 180 150"
+            stroke="#00ffab" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <line x1="135" y1="150" x2="140" y2="163" stroke="#00ffab" stroke-width="2" stroke-linecap="round" />
+      <line x1="165" y1="150" x2="160" y2="163" stroke="#00ffab" stroke-width="2" stroke-linecap="round" />
+      <!-- Center stripe -->
+      <path d="M150 90 Q150 85 150 90 L150 120" stroke="#00ffab" stroke-width="2" stroke-opacity="0.5" />
+    </g>
+
+    <!-- Sleep Z's -->
+    <g class="sleep-zs">
+      <text x="200" y="120" fill="#00b4d8" font-size="18" font-weight="bold" opacity="0.7" class="z1">Z</text>
+      <text x="215" y="100" fill="#00b4d8" font-size="14" font-weight="bold" opacity="0.5" class="z2">z</text>
+      <text x="225" y="85" fill="#00b4d8" font-size="10" font-weight="bold" opacity="0.3" class="z3">z</text>
+    </g>
+
+    <!-- Wave hand (for idle wave) -->
+    <g class="wave-hand">
+      <path d="M210 175 Q235 170 240 155 Q242 148 237 147 Q232 147 230 155 Q228 165 210 170Z"
+            fill="url(#bodyGradient)" stroke="#00b4d8" stroke-width="1" stroke-opacity="0.3" />
+    </g>
+  </svg>
+</div>

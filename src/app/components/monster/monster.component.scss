@@ -1,0 +1,303 @@
+.monster-wrapper {
+  width: 220px;
+  height: 220px;
+  position: relative;
+}
+
+.monster-svg {
+  width: 100%;
+  height: 100%;
+}
+
+// ==============================
+// Default hidden states
+// ==============================
+.headphones-accessory,
+.dj-accessory,
+.football-accessory,
+.sleep-zs,
+.wave-hand {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.eyelids {
+  .left-eyelid,
+  .right-eyelid {
+    transform: scaleY(0);
+    transform-origin: center 145px;
+    transition: transform 0.3s ease;
+  }
+}
+
+// ==============================
+// IDLE state
+// ==============================
+.idle {
+  .body-group {
+    animation: breathe 3s ease-in-out infinite;
+  }
+
+  .eyes {
+    animation: lookAround 6s ease-in-out infinite;
+  }
+
+  .eyelids {
+    .left-eyelid,
+    .right-eyelid {
+      animation: blink 4s ease-in-out infinite;
+    }
+  }
+
+  .ambient-glow {
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+}
+
+// ==============================
+// SLEEP state
+// ==============================
+.sleep {
+  .body-group {
+    animation: breatheSlow 4s ease-in-out infinite;
+  }
+
+  .eyelids {
+    .left-eyelid,
+    .right-eyelid {
+      transform: scaleY(1);
+    }
+  }
+
+  .sleep-zs {
+    opacity: 1;
+
+    .z1 {
+      animation: floatZ 2s ease-in-out infinite;
+    }
+    .z2 {
+      animation: floatZ 2s ease-in-out 0.4s infinite;
+    }
+    .z3 {
+      animation: floatZ 2s ease-in-out 0.8s infinite;
+    }
+  }
+
+  .mouth-line {
+    d: path("M140 192 Q150 188 160 192");
+  }
+}
+
+// ==============================
+// HEADPHONES state (xomify)
+// ==============================
+.headphones {
+  .headphones-accessory {
+    opacity: 1;
+  }
+
+  .body-group {
+    animation: headBob 0.6s ease-in-out infinite;
+  }
+
+  .eyes {
+    animation: happyEyes 1.2s ease-in-out infinite;
+  }
+
+  .mouth-line {
+    d: path("M135 188 Q150 200 165 188");
+  }
+
+  .ambient-glow {
+    animation: glowPulseColor 0.6s ease-in-out infinite;
+    fill: rgba(156, 10, 191, 0.15);
+  }
+}
+
+// ==============================
+// DJ state (xomcloud)
+// ==============================
+.dj {
+  .dj-accessory {
+    opacity: 1;
+  }
+
+  .body-group {
+    transform: translateY(-15px);
+  }
+
+  .left-arm {
+    animation: scratchLeft 0.8s ease-in-out infinite;
+    transform-origin: 90px 180px;
+  }
+
+  .right-arm {
+    animation: scratchRight 0.8s ease-in-out infinite alternate;
+    transform-origin: 210px 180px;
+  }
+
+  .platter-center {
+    animation: spin 1s linear infinite;
+    transform-origin: center;
+  }
+
+  .crossfader {
+    animation: crossfade 1.6s ease-in-out infinite;
+  }
+
+  .mouth-line {
+    d: path("M135 188 Q150 202 165 188");
+  }
+
+  .eyes {
+    animation: happyEyes 1s ease-in-out infinite;
+  }
+
+  .ambient-glow {
+    fill: rgba(255, 107, 53, 0.15);
+    animation: glowPulseColor 0.8s ease-in-out infinite;
+  }
+}
+
+// ==============================
+// FOOTBALL state (xomper)
+// ==============================
+.football {
+  .football-accessory {
+    opacity: 1;
+  }
+
+  .left-leg,
+  .right-leg {
+    animation: runLegs 0.4s ease-in-out infinite alternate;
+    transform-origin: center 230px;
+  }
+
+  .right-leg {
+    animation-delay: 0.2s;
+  }
+
+  .left-arm {
+    animation: pumpArm 0.4s ease-in-out infinite;
+    transform-origin: 90px 180px;
+  }
+
+  .right-arm {
+    animation: pumpArm 0.4s ease-in-out infinite alternate;
+    transform-origin: 210px 180px;
+  }
+
+  .body-group {
+    animation: runBounce 0.4s ease-in-out infinite;
+  }
+
+  .mouth-line {
+    d: path("M135 188 Q150 200 165 188");
+  }
+
+  .ambient-glow {
+    fill: rgba(0, 255, 171, 0.15);
+    animation: glowPulseColor 0.4s ease-in-out infinite;
+  }
+}
+
+// ==============================
+// Keyframes
+// ==============================
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-3px) scaleY(1.02); }
+}
+
+@keyframes breatheSlow {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-2px) scaleY(1.01); }
+}
+
+@keyframes lookAround {
+  0%, 40%, 100% { transform: translateX(0); }
+  10% { transform: translateX(3px); }
+  25% { transform: translateX(-3px); }
+}
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(0); }
+  95%, 97% { transform: scaleY(1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes glowPulseColor {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes floatZ {
+  0% { transform: translate(0, 0); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translate(5px, -20px); opacity: 0; }
+}
+
+@keyframes headBob {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-5px) rotate(-2deg); }
+  75% { transform: translateY(-5px) rotate(2deg); }
+}
+
+@keyframes happyEyes {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.85); }
+}
+
+@keyframes scratchLeft {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-15deg); }
+}
+
+@keyframes scratchRight {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(15deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes crossfade {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+@keyframes runLegs {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+
+@keyframes pumpArm {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-20deg); }
+}
+
+@keyframes runBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .monster-wrapper {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 576px) {
+  .monster-wrapper {
+    width: 150px;
+    height: 150px;
+  }
+}

@@ -1,0 +1,59 @@
+@import 'styles/variables';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: $bg-dark;
+  color: $text-primary;
+  font-family: $font-stack;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection {
+  background-color: rgba($brand-cyan, 0.3);
+  color: $text-primary;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba($brand-cyan, 0.5);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba($brand-cyan, 0.7);
+  }
+}
+
+a {
+  color: $brand-cyan;
+  text-decoration: none;
+  transition: color $transition-base;
+
+  &:hover {
+    color: $brand-cyan-light;
+  }
+}
