@@ -1,4 +1,6 @@
-import { Component, OnDestroy, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ElementRef, AfterViewInit, HostListener, OnInit } from '@angular/core';
+import { AgentStatusService, AgentStatus } from '../../../services/agent-status.service';
+import { Subscription } from 'rxjs';
 
 interface Agent {
   name: string;
@@ -19,7 +21,7 @@ interface Agent {
   templateUrl: './pixel-office.component.html',
   styleUrls: ['./pixel-office.component.scss'],
 })
-export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
+export class PixelOfficeComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('officeCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private ctx!: CanvasRenderingContext2D;
@@ -29,6 +31,10 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
   private canvasW = 600;
   private canvasH = 440;
   private scale = 1;
+  private statusSub!: Subscription;
+  lastUpdated: string | null = null;
+
+  constructor(private agentStatusService: AgentStatusService) {}
 
   agentDescriptions: Record<string, string> = {
     'Jarvis': 'Main brain. Orchestrates all other agents, talks to Dom, manages priorities.',
@@ -41,9 +47,9 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
 
   agents: Agent[] = [
     {
-      name: 'Jarvis', role: 'Lead Orchestrator', status: 'working',
+      name: 'Jarvis', role: 'Lead Orchestrator', status: 'idle',
       x: 100, y: 90, color: '#00b4d8', skinTone: '#d4a574', hairColor: '#2c1810', hairStyle: 'short',
-      task: 'Orchestrating agents', frame: 0,
+      frame: 0,
     },
     {
       name: 'Forge', role: 'Code & Build', status: 'idle',
@@ -51,9 +57,9 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
       frame: 0,
     },
     {
-      name: 'Recon', role: 'Research & Analysis', status: 'thinking',
+      name: 'Recon', role: 'Research & Analysis', status: 'idle',
       x: 500, y: 90, color: '#ff6b35', skinTone: '#c68642', hairColor: '#4a2c0a', hairStyle: 'long',
-      task: 'Analyzing best practices', frame: 0,
+      frame: 0,
     },
     {
       name: 'Watchtower', role: 'Monitor & Alerting', status: 'idle',
@@ -72,6 +78,17 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
     },
   ];
 
+  ngOnInit(): void {
+    // Start polling agent status from the API
+    this.agentStatusService.startPolling(10_000);
+    this.statusSub = this.agentStatusService.status$.subscribe(data => {
+      if (data.agents.length > 0) {
+        this.applyStatus(data.agents);
+        this.lastUpdated = data.updatedAt;
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
     this.resizeCanvas();
     this.ctx = this.canvasRef.nativeElement.getContext('2d')!;
@@ -80,6 +97,18 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.rafId);
+    this.agentStatusService.stopPolling();
+    if (this.statusSub) this.statusSub.unsubscribe();
+  }
+
+  private applyStatus(statuses: AgentStatus[]): void {
+    for (const s of statuses) {
+      const agent = this.agents.find(a => a.name === s.name);
+      if (agent) {
+        agent.status = s.status;
+        agent.task = s.task ?? undefined;
+      }
+    }
   }
 
   @HostListener('window:resize')
