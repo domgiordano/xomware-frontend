@@ -25,10 +25,19 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
   private rafId = 0;
   private tick = 0;
 
+  agentDescriptions: Record<string, string> = {
+    'Jarvis': 'Main brain. Orchestrates all other agents, talks to Dom, manages priorities.',
+    'Forge': 'Spawned for coding tasks — builds features, fixes bugs, opens PRs across repos.',
+    'Recon': 'Web research, docs analysis, best practice scouting. Feeds intel back to Jarvis.',
+    'Watchtower': 'Monitors GitHub PRs, CI/CD status, email, calendar. Alerts on anything urgent.',
+    'Scribe': 'Maintains MEMORY.md, LESSONS.md, daily logs. Keeps institutional knowledge alive.',
+    'Deployer': 'Handles Terraform plans, CI/CD pipelines, infrastructure changes. Reviews before apply.',
+  };
+
   agents: Agent[] = [
     {
       name: 'Jarvis',
-      role: 'Lead Agent',
+      role: 'Lead Orchestrator',
       status: 'working',
       x: 120, y: 180,
       desk: { x: 80, y: 160, w: 80, h: 50 },
@@ -37,8 +46,8 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
       frame: 0,
     },
     {
-      name: 'Builder',
-      role: 'Code Agent',
+      name: 'Forge',
+      role: 'Code & Build Agent',
       status: 'idle',
       x: 300, y: 180,
       desk: { x: 260, y: 160, w: 80, h: 50 },
@@ -46,8 +55,8 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
       frame: 0,
     },
     {
-      name: 'Scout',
-      role: 'Research Agent',
+      name: 'Recon',
+      role: 'Research & Analysis Agent',
       status: 'thinking',
       x: 480, y: 180,
       desk: { x: 440, y: 160, w: 80, h: 50 },
@@ -56,12 +65,30 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
       frame: 0,
     },
     {
-      name: 'Sentinel',
-      role: 'Monitor Agent',
+      name: 'Watchtower',
+      role: 'Monitor & Alerting Agent',
+      status: 'idle',
+      x: 120, y: 320,
+      desk: { x: 80, y: 300, w: 80, h: 50 },
+      color: '#00ffab',
+      frame: 0,
+    },
+    {
+      name: 'Scribe',
+      role: 'Docs & Memory Agent',
       status: 'idle',
       x: 300, y: 320,
       desk: { x: 260, y: 300, w: 80, h: 50 },
-      color: '#00ffab',
+      color: '#ffbe0b',
+      frame: 0,
+    },
+    {
+      name: 'Deployer',
+      role: 'CI/CD & Infra Agent',
+      status: 'idle',
+      x: 480, y: 320,
+      desk: { x: 440, y: 300, w: 80, h: 50 },
+      color: '#ff5252',
       frame: 0,
     },
   ];
@@ -69,7 +96,7 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const canvas = this.canvasRef.nativeElement;
     canvas.width = 600;
-    canvas.height = 420;
+    canvas.height = 460;
     this.ctx = canvas.getContext('2d')!;
     this.animate();
   }
@@ -90,7 +117,7 @@ export class PixelOfficeComponent implements AfterViewInit, OnDestroy {
 
   private draw(): void {
     const ctx = this.ctx;
-    const w = 600, h = 420;
+    const w = 600, h = 460;
 
     // Background — dark office floor
     ctx.fillStyle = '#0d0d1a';

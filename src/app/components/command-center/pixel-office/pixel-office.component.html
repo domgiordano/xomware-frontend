@@ -15,7 +15,8 @@
         <span class="agent-badge" [attr.data-status]="agent.status">{{ agent.status }}</span>
       </div>
       <span class="agent-role">{{ agent.role }}</span>
-      <span *ngIf="agent.task" class="agent-task">{{ agent.task }}</span>
+      <span class="agent-desc">{{ agentDescriptions[agent.name] }}</span>
+      <span *ngIf="agent.task" class="agent-task">📌 {{ agent.task }}</span>
     </div>
   </div>
 </div>
