@@ -7,8 +7,12 @@ import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
-  { path: 'command', component: CommandCenterComponent, canActivate: [AuthGuard] },
+  // Redirect bare /command to the default tab
+  { path: 'command', redirectTo: 'command/board', pathMatch: 'full' },
+  // Login must come before the :tab wildcard
   { path: 'command/login', component: AuthGateComponent },
+  // Child tab routes — kanban→board, files, activity, infra, office
+  { path: 'command/:tab', component: CommandCenterComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];
 
