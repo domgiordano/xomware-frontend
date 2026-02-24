@@ -1,8 +1,27 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 export type TabId = 'kanban' | 'files' | 'activity' | 'office' | 'infra';
+
+/** Maps URL path segment → internal tab ID */
+const ROUTE_TO_TAB: Record<string, TabId> = {
+  board: 'kanban',
+  files: 'files',
+  activity: 'activity',
+  infra: 'infra',
+  office: 'office',
+};
+
+/** Maps internal tab ID → URL path segment */
+const TAB_TO_ROUTE: Record<TabId, string> = {
+  kanban: 'board',
+  files: 'files',
+  activity: 'activity',
+  infra: 'infra',
+  office: 'office',
+};
 
 interface Tab {
   id: TabId;
@@ -15,7 +34,7 @@ interface Tab {
   templateUrl: './command-center.component.html',
   styleUrls: ['./command-center.component.scss'],
 })
-export class CommandCenterComponent {
+export class CommandCenterComponent implements OnInit, OnDestroy {
   activeTab: TabId = 'kanban';
 
   tabs: Tab[] = [
@@ -26,10 +45,31 @@ export class CommandCenterComponent {
     { id: 'office', label: 'Office', icon: '🏢' },
   ];
 
-  constructor(private auth: AuthService, private router: Router) {}
+  private routeSub?: Subscription;
 
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    // Sync activeTab with the :tab route param on init and whenever it changes
+    this.routeSub = this.route.params.subscribe(params => {
+      const tabId = ROUTE_TO_TAB[params['tab']];
+      if (tabId) {
+        this.activeTab = tabId;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routeSub?.unsubscribe();
+  }
+
+  /** Called when user clicks a tab — updates the URL to reflect the new tab */
   setTab(tab: TabId): void {
-    this.activeTab = tab;
+    this.router.navigate(['/command', TAB_TO_ROUTE[tab]]);
   }
 
   logout(): void {
