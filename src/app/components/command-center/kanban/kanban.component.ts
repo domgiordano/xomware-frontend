@@ -26,7 +26,9 @@ export interface KanbanColumn {
 })
 export class KanbanComponent implements OnInit {
   columns: KanbanColumn[] = [
-    { id: 'todo', title: 'To Do', icon: '📋', color: '#8a8a9a' },
+    { id: 'dom-todo', title: 'Dom Todo', icon: '👤', color: '#7c3aed' },
+    { id: 'blocked-by-dom', title: 'Blocked by Dom', icon: '⏳', color: '#f59e0b' },
+    { id: 'todo', title: 'Agent Todo', icon: '🤖', color: '#8a8a9a' },
     { id: 'in-progress', title: 'In Progress', icon: '🔨', color: '#00b4d8' },
     { id: 'in-review', title: 'In Review', icon: '👀', color: '#ff6b35' },
     { id: 'done', title: 'Done', icon: '✅', color: '#00ffab' },
@@ -131,6 +133,17 @@ export class KanbanComponent implements OnInit {
 
   private getDefaultCards(): KanbanCard[] {
     return [
+      // === DOM TODO ITEMS ===
+      {
+        id: 'dom-1', title: 'Transfer xomify-ios repo to Xomware org', description: 'Move repo from domgiordano/xomify-ios to Xomware/xomify-ios',
+        labels: ['admin', 'repo-transfer'], repo: 'xomify-ios',
+        column: 'dom-todo', createdAt: '2026-02-25T00:00:00Z',
+      },
+      {
+        id: 'dom-2', title: 'Delete old TFC workspaces', description: 'Clean up unused Terraform Cloud workspaces',
+        labels: ['admin', 'cleanup', 'terraform'], 
+        column: 'dom-todo', createdAt: '2026-02-25T00:00:00Z',
+      },
       // === XOMWARE-FRONTEND ===
       {
         id: 'xw-1', title: 'Upgrade Angular 16 → 18', description: '',
@@ -232,18 +245,18 @@ export class KanbanComponent implements OnInit {
 
       // === XOMIFY-IOS ===
       {
-        id: 'xios-3', title: 'Add CI/CD pipeline (Xcode Cloud / GitHub Actions)', description: '',
+        id: 'xios-3', title: 'Add CI/CD pipeline (Xcode Cloud / GitHub Actions)', description: 'Waiting for repo transfer to Xomware org',
         labels: ['devops', 'ios'], repo: 'xomify-ios',
         issueUrl: 'https://github.com/domgiordano/xomify-ios/issues/3',
         prUrl: 'https://github.com/domgiordano/xomify-ios/pull/5',
-        column: 'in-review', createdAt: '2026-02-21T00:00:00Z',
+        column: 'blocked-by-dom', createdAt: '2026-02-21T00:00:00Z',
       },
       {
-        id: 'xios-4', title: 'Add app icon', description: '',
+        id: 'xios-4', title: 'Add app icon', description: 'Waiting for repo transfer to Xomware org',
         labels: ['design', 'ios'], repo: 'xomify-ios',
         issueUrl: 'https://github.com/domgiordano/xomify-ios/issues/4',
         prUrl: 'https://github.com/domgiordano/xomify-ios/pull/6',
-        column: 'in-review', createdAt: '2026-02-21T00:00:00Z',
+        column: 'blocked-by-dom', createdAt: '2026-02-21T00:00:00Z',
       },
 
       // === XOMFIT-IOS ===
