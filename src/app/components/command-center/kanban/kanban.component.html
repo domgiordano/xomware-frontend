@@ -2,6 +2,7 @@
   <div class="kanban-header">
     <h2>📋 XomBoard</h2>
     <span class="live-status" [class.live]="isLive">{{ liveStatus }}</span>
+    <button class="refresh-btn" (click)="refreshBoard()" title="Refresh board now">🔄 Refresh</button>
     <span class="card-count">{{ filteredCount }} / {{ cards.length }} items</span>
     <div class="repo-filters">
       <button class="repo-btn" [class.active]="!repoFilter" (click)="repoFilter = ''">All</button>

@@ -59,7 +59,7 @@ export class BoardService implements OnDestroy {
     this.stopPolling();
   }
 
-  private async fetch(): Promise<void> {
+  async fetch(): Promise<void> {
     try {
       const res = await fetch(this.url, {
         headers: {

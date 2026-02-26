@@ -17,6 +17,35 @@
     color: $text-primary;
   }
 
+  .live-status {
+    font-size: 0.75rem;
+    color: $text-muted;
+    padding: 2px 8px;
+    border-radius: $radius-md;
+    
+    &.live {
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.1);
+    }
+  }
+
+  .refresh-btn {
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: $radius-md;
+    color: $text-secondary;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all $transition-base;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: $text-primary;
+    }
+  }
+
   .card-count {
     font-size: 0.8rem;
     color: $text-muted;

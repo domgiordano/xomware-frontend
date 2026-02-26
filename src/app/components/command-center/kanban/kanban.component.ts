@@ -66,4 +66,8 @@ export class KanbanComponent implements OnInit, OnDestroy {
     if (ago < 60) return `Live — updated ${ago}s ago`;
     return `Updated ${Math.round(ago / 60)}m ago`;
   }
+
+  refreshBoard(): void {
+    this.boardService.fetch();
+  }
 }
