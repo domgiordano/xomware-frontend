@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BoardService, BoardCard, BoardColumn } from '../../../services/board.service';
+import { InboxService, InboxItem } from '../../../services/inbox.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,9 +29,21 @@ export class KanbanComponent implements OnInit, OnDestroy {
   repoFilter = '';
   repos: string[] = [];
 
-  private boardSub?: Subscription;
+  // Inbox
+  showAddIdea = false;
+  ideaTitle = '';
+  ideaDescription = '';
+  ideaRepo = '';
+  submittingIdea = false;
+  pendingIdeas: InboxItem[] = [];
 
-  constructor(private boardService: BoardService) {}
+  private boardSub?: Subscription;
+  private inboxSub?: Subscription;
+
+  constructor(
+    private boardService: BoardService,
+    private inboxService: InboxService,
+  ) {}
 
   ngOnInit(): void {
     this.boardService.startPolling(30_000);
@@ -43,11 +56,17 @@ export class KanbanComponent implements OnInit, OnDestroy {
       }
       this.repos = [...new Set(this.cards.map(c => c.repo).filter(Boolean) as string[])].sort();
     });
+
+    this.inboxService.fetch();
+    this.inboxSub = this.inboxService.inbox$.subscribe(items => {
+      this.pendingIdeas = items.filter(i => i.status === 'pending');
+    });
   }
 
   ngOnDestroy(): void {
     this.boardService.stopPolling();
     this.boardSub?.unsubscribe();
+    this.inboxSub?.unsubscribe();
   }
 
   getColumnCards(columnId: string): BoardCard[] {
@@ -110,6 +129,23 @@ export class KanbanComponent implements OnInit, OnDestroy {
       console.error('Failed to move card');
     }
     this.dragCardId = null;
+  }
+
+  async submitIdea(): Promise<void> {
+    if (!this.ideaTitle.trim() || this.submittingIdea) return;
+    this.submittingIdea = true;
+    const success = await this.inboxService.addIdea(
+      this.ideaTitle.trim(),
+      this.ideaDescription.trim(),
+      this.ideaRepo.trim(),
+    );
+    this.submittingIdea = false;
+    if (success) {
+      this.ideaTitle = '';
+      this.ideaDescription = '';
+      this.ideaRepo = '';
+      this.showAddIdea = false;
+    }
   }
 
   onDragEnd(): void {
