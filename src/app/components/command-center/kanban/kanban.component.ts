@@ -10,17 +10,19 @@ import { Subscription } from 'rxjs';
 export class KanbanComponent implements OnInit, OnDestroy {
   columns: BoardColumn[] = [
     { id: 'dom-todo', title: 'Dom Todo', icon: '👤', color: '#3b82f6' },
+    { id: 'dom-done', title: 'Dom Done', icon: '👍', color: '#22c55e' },
     { id: 'blocked-by-dom', title: 'Blocked by Dom', icon: '🚫', color: '#ef4444' },
     { id: 'todo', title: 'Agent Todo', icon: '📋', color: '#8a8a9a' },
     { id: 'in-progress', title: 'In Progress', icon: '🔨', color: '#00b4d8' },
     { id: 'in-review', title: 'In Review', icon: '👀', color: '#ff6b35' },
-    { id: 'dom-done', title: 'Dom Done', icon: '👍', color: '#22c55e' },
     { id: 'done', title: 'Done', icon: '✅', color: '#00ffab' },
   ];
 
   cards: BoardCard[] = [];
+  archivedCards: BoardCard[] = [];
   lastUpdated: string | null = null;
   isLive = false;
+  showArchive = false;
 
   // Filtering
   repoFilter = '';
@@ -33,11 +35,9 @@ export class KanbanComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.boardService.startPolling(30_000);
     this.boardSub = this.boardService.board$.subscribe(data => {
-      if (data.cards.length > 0) {
-        this.cards = data.cards;
-        if (data.columns.length > 0) {
-          this.columns = data.columns;
-        }
+      if (data.cards.length > 0 || data.archivedCards?.length > 0) {
+        this.cards = data.cards.filter(c => c.column !== 'archived');
+        this.archivedCards = data.archivedCards || data.cards.filter(c => c.column === 'archived');
         this.lastUpdated = data.updatedAt;
         this.isLive = true;
       }
@@ -58,6 +58,11 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   get filteredCount(): number {
     return this.cards.filter(c => !this.repoFilter || c.repo === this.repoFilter).length;
+  }
+
+  get filteredArchive(): BoardCard[] {
+    return this.archivedCards
+      .filter(c => !this.repoFilter || c.repo === this.repoFilter);
   }
 
   get liveStatus(): string {
