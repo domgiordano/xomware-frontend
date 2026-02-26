@@ -27,6 +27,7 @@ export interface BoardStatusResponse {
   updatedAt: string | null;
   columns: BoardColumn[];
   cards: BoardCard[];
+  archivedCards?: BoardCard[];
 }
 
 @Injectable({ providedIn: 'root' })
