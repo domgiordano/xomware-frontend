@@ -352,6 +352,88 @@
   }
 }
 
+// Add Idea button
+.add-idea-btn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: 4px 14px;
+  background: rgba($brand-cyan, 0.08);
+  border: 1px solid rgba($brand-cyan, 0.2);
+  border-radius: $radius-xl;
+  color: $brand-cyan;
+  font-size: 0.8rem;
+  font-family: $font-stack;
+  cursor: pointer;
+  transition: all $transition-base;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba($brand-cyan, 0.15);
+    border-color: rgba($brand-cyan, 0.4);
+  }
+
+  .pending-badge {
+    background: $brand-cyan;
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+  }
+}
+
+// Idea modal extras
+.idea-modal {
+  max-width: 480px;
+
+  .idea-hint {
+    font-size: 0.8rem;
+    color: $text-muted;
+    margin-bottom: $spacing-md;
+    line-height: 1.4;
+  }
+}
+
+.pending-list {
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  h4 {
+    font-size: 0.8rem;
+    color: $text-muted;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.pending-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: $radius-sm;
+  margin-bottom: 4px;
+
+  .pending-title {
+    font-size: 0.8rem;
+    color: $text-secondary;
+    flex: 1;
+  }
+
+  .pending-repo {
+    font-size: 0.7rem;
+    color: $text-muted;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 8px;
+    border-radius: $radius-xl;
+    font-family: 'SF Mono', monospace;
+  }
+}
+
 // Archive section
 .archive-section {
   flex-shrink: 0;

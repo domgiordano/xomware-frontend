@@ -3,6 +3,10 @@
     <h2>📋 XomBoard</h2>
     <span class="live-status" [class.live]="isLive">{{ liveStatus }}</span>
     <span class="card-count">{{ filteredCount }} active · {{ archivedCards.length }} archived</span>
+    <button class="add-idea-btn" (click)="showAddIdea = true">
+      💡 Add Idea
+      <span *ngIf="pendingIdeas.length > 0" class="pending-badge">{{ pendingIdeas.length }}</span>
+    </button>
     <div class="repo-filters">
       <button class="repo-btn" [class.active]="!repoFilter" (click)="repoFilter = ''">All</button>
       <button
@@ -78,6 +82,47 @@
         <div class="card-footer">
           <span *ngIf="card.repo" class="card-repo">{{ card.repo }}</span>
           <a *ngIf="card.issueUrl" [href]="card.issueUrl" target="_blank" class="card-link">Issue ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Idea Modal -->
+  <div class="modal-overlay" *ngIf="showAddIdea" (click)="showAddIdea = false">
+    <div class="modal-card idea-modal" (click)="$event.stopPropagation()">
+      <h3>💡 Drop an Idea</h3>
+      <p class="idea-hint">Quick thought — Scribe will flesh it out into proper tickets.</p>
+      <form (submit)="$event.preventDefault(); submitIdea()">
+        <input
+          type="text"
+          [(ngModel)]="ideaTitle"
+          placeholder="What needs to happen?"
+          autofocus
+        />
+        <textarea
+          [(ngModel)]="ideaDescription"
+          placeholder="Any extra context? (optional)"
+          rows="3"
+        ></textarea>
+        <input
+          type="text"
+          [(ngModel)]="ideaRepo"
+          placeholder="Repo hint: e.g. xomfit-ios, xomify-frontend (optional)"
+        />
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" (click)="showAddIdea = false">Cancel</button>
+          <button type="submit" class="btn-add" [disabled]="!ideaTitle.trim() || submittingIdea">
+            {{ submittingIdea ? 'Sending...' : 'Submit Idea' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Pending ideas -->
+      <div class="pending-list" *ngIf="pendingIdeas.length > 0">
+        <h4>⏳ Waiting for Scribe ({{ pendingIdeas.length }})</h4>
+        <div *ngFor="let idea of pendingIdeas" class="pending-item">
+          <span class="pending-title">{{ idea.title }}</span>
+          <span *ngIf="idea.repoHint" class="pending-repo">{{ idea.repoHint }}</span>
         </div>
       </div>
     </div>
