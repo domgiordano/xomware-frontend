@@ -35,7 +35,7 @@ export class KanbanComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.boardService.startPolling(30_000);
     this.boardSub = this.boardService.board$.subscribe(data => {
-      if (data.cards.length > 0 || data.archivedCards?.length > 0) {
+      if (data.cards.length > 0 || (data.archivedCards && data.archivedCards.length > 0)) {
         this.cards = data.cards.filter(c => c.column !== 'archived');
         this.archivedCards = data.archivedCards || data.cards.filter(c => c.column === 'archived');
         this.lastUpdated = data.updatedAt;
