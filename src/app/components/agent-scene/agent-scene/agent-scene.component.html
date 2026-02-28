@@ -1,0 +1,59 @@
+<section class="agent-scene-section">
+  <div class="scene-header">
+    <span class="scene-eyebrow">🤖 The Team</span>
+    <h2 class="scene-title">Meet the Agents</h2>
+    <p class="scene-subtitle">They never sleep. Hover to meet them.</p>
+  </div>
+
+  <!-- Full scene (desktop + tablet) -->
+  <div class="scene-container">
+    <svg
+      #sceneSvg
+      class="scene-svg"
+      viewBox="0 0 560 160"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Xomware AI agent team"
+      role="img"
+    >
+      <defs>
+        <radialGradient id="blobShine" cx="35%" cy="30%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Ground line -->
+      <line x1="0" y1="140" x2="560" y2="140"
+            stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+      <!-- Agent blobs (projected into SVG via ng-container) -->
+      <svg:g *ngFor="let agent of agents"
+             [attr.transform]="'translate(' + agent.startX + ',' + agent.startY + ') scale(' + agent.scale + ')'">
+        <app-agent-blob
+          [agent]="agent"
+          (blobClick)="onAgentClick($event)"
+          (blobHover)="onBlobHover($event)"
+        ></app-agent-blob>
+      </svg:g>
+    </svg>
+  </div>
+
+  <!-- Agent name pills (always visible) -->
+  <div class="agent-pills">
+    <button
+      *ngFor="let agent of agents"
+      class="agent-pill"
+      [style.--agent-color]="agent.color"
+      (click)="onAgentClick(agent)"
+    >
+      <span class="pill-dot" [style.background]="agent.color"></span>
+      {{ agent.displayName }}
+    </button>
+  </div>
+
+  <!-- Status modal -->
+  <app-agent-status-modal
+    [agent]="selectedAgent"
+    (close)="onModalClose()"
+  ></app-agent-status-modal>
+</section>

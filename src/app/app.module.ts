@@ -16,6 +16,16 @@ import { ActivityLogComponent } from './components/command-center/activity-log/a
 import { PixelOfficeComponent } from './components/command-center/pixel-office/pixel-office.component';
 import { InfraDashboardComponent } from './components/command-center/infra-dashboard/infra-dashboard.component';
 
+// Coming Soon components
+import { CautionTapeComponent } from './components/coming-soon/caution-tape/caution-tape.component';
+import { ComingSoonCardComponent } from './components/coming-soon/coming-soon-card/coming-soon-card.component';
+import { ComingSoonSectionComponent } from './components/coming-soon/coming-soon-section/coming-soon-section.component';
+
+// Agent Scene components
+import { AgentBlobComponent } from './components/agent-scene/agent-blob/agent-blob.component';
+import { AgentSceneComponent } from './components/agent-scene/agent-scene/agent-scene.component';
+import { AgentStatusModalComponent } from './components/agent-scene/agent-status-modal/agent-status-modal.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +39,14 @@ import { InfraDashboardComponent } from './components/command-center/infra-dashb
     ActivityLogComponent,
     PixelOfficeComponent,
     InfraDashboardComponent,
+    // Coming Soon
+    CautionTapeComponent,
+    ComingSoonCardComponent,
+    ComingSoonSectionComponent,
+    // Agent Scene
+    AgentBlobComponent,
+    AgentSceneComponent,
+    AgentStatusModalComponent,
   ],
   imports: [
     BrowserModule,

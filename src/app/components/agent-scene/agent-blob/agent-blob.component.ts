@@ -1,0 +1,384 @@
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+  OnDestroy,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
+import { gsap } from 'gsap';
+import { AgentBlob } from '../../../models/agent.models';
+
+@Component({
+  selector: 'app-agent-blob',
+  templateUrl: './agent-blob.component.html',
+  styleUrls: ['./agent-blob.component.scss'],
+})
+export class AgentBlobComponent implements AfterViewInit, OnDestroy {
+  @Input() agent!: AgentBlob;
+  @Output() blobClick = new EventEmitter<AgentBlob>();
+  @Output() blobHover = new EventEmitter<{ agent: AgentBlob; entering: boolean }>();
+
+  @ViewChild('blobGroup', { static: true }) blobGroupRef!: ElementRef<SVGGElement>;
+
+  private blinkTimer: any;
+  private signatureTimer: any;
+  private idleTween: gsap.core.Tween | null = null;
+  private prefersReducedMotion = false;
+
+  get el(): SVGGElement {
+    return this.blobGroupRef.nativeElement;
+  }
+
+  ngAfterViewInit(): void {
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.startIdleAnimation();
+    this.startBlink();
+    if (!this.prefersReducedMotion) {
+      this.scheduleSignature();
+    }
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.blinkTimer);
+    clearTimeout(this.signatureTimer);
+    gsap.killTweensOf(this.el);
+    gsap.killTweensOf(this.el.querySelectorAll('*'));
+  }
+
+  onMouseEnter(): void {
+    this.blobHover.emit({ agent: this.agent, entering: true });
+    this.playWave();
+    gsap.to(this.el, {
+      scale: 1.15,
+      duration: 0.3,
+      ease: 'back.out(1.7)',
+      transformOrigin: 'center center',
+    });
+    gsap.to(this.el.querySelector('.agent-label'), {
+      opacity: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  }
+
+  onMouseLeave(): void {
+    this.blobHover.emit({ agent: this.agent, entering: false });
+    gsap.to(this.el, {
+      scale: this.agent.scale,
+      duration: 0.3,
+      ease: 'power2.out',
+      transformOrigin: 'center center',
+    });
+    gsap.to(this.el.querySelector('.agent-label'), {
+      opacity: 0,
+      duration: 0.2,
+    });
+  }
+
+  onClick(): void {
+    this.blobClick.emit(this.agent);
+  }
+
+  // ── Wave arm on hover ──────────────────────────────
+  private playWave(): void {
+    if (this.prefersReducedMotion) return;
+    const arm = this.el.querySelector('.arm-right');
+    if (!arm) return;
+    gsap.to(arm, {
+      rotation: -35,
+      transformOrigin: 'left center',
+      duration: 0.22,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: 5,
+    });
+  }
+
+  // ── Idle animations per agent ──────────────────────────────
+  private startIdleAnimation(): void {
+    if (this.prefersReducedMotion) return;
+
+    switch (this.agent.idleAnimation) {
+      case 'pace':    this.animatePace(); break;
+      case 'hammer':  this.animateHammer(); break;
+      case 'patrol':  this.animatePatrol(); break;
+      case 'orbit':   this.animateOrbit(); break;
+      case 'write':   this.animateWrite(); break;
+      case 'nod':     this.animateNod(); break;
+    }
+
+    // Universal breath squish on all blobs
+    const body = this.el.querySelector('.b-body');
+    if (body) {
+      gsap.to(body, {
+        attr: { ry: 17 },
+        duration: 1.8 + Math.random() * 0.5,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: Math.random(),
+      });
+    }
+  }
+
+  // Boris: pacing left-right
+  private animatePace(): void {
+    gsap.to(this.el, {
+      x: '+=40',
+      duration: 1.8,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // Forge: hammering bounce + body squash
+  private animateHammer(): void {
+    const body = this.el.querySelector('.b-body');
+    gsap.to(this.el, {
+      y: '+=3',
+      duration: 0.3,
+      ease: 'power2.in',
+      yoyo: true,
+      repeat: -1,
+    });
+    if (body) {
+      gsap.to(body, {
+        attr: { ry: 13 },
+        duration: 0.3,
+        ease: 'power2.in',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  }
+
+  // Winston: patrol walk + steam puffs
+  private animatePatrol(): void {
+    gsap.to(this.el, {
+      x: '+=80',
+      duration: 4,
+      ease: 'none',
+      yoyo: true,
+      repeat: -1,
+    });
+    const steams = this.el.querySelectorAll('.steam-1, .steam-2');
+    gsap.to(steams, {
+      opacity: 0,
+      y: '-=4',
+      duration: 0.8,
+      ease: 'sine.out',
+      stagger: 0.2,
+      repeat: -1,
+      repeatDelay: 0.2,
+    });
+  }
+
+  // Rocco: orbiting data dots
+  private animateOrbit(): void {
+    const dots = this.el.querySelectorAll('.data-dot-1, .data-dot-2, .data-dot-3');
+    dots.forEach((dot, i) => {
+      let angle = (i / dots.length) * Math.PI * 2;
+      const radius = 28;
+      const speed = 0.04 + i * 0.01;
+      gsap.to({}, {
+        duration: 999,
+        repeat: -1,
+        ease: 'none',
+        onUpdate: function () {
+          angle += speed;
+          gsap.set(dot, {
+            x: Math.cos(angle) * radius,
+            y: Math.sin(angle) * radius * 0.6,
+          });
+        },
+      });
+    });
+
+    // Head tilt
+    gsap.to(this.el, {
+      rotation: 10,
+      duration: 2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // Stormy: quill writing oscillation
+  private animateWrite(): void {
+    const acc = this.el.querySelector('.accessory-group');
+    if (acc) {
+      gsap.to(acc, {
+        x: '+=4',
+        y: '+=2',
+        duration: 0.4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+    // Also gentle drift
+    gsap.to(this.el, {
+      y: '+=3',
+      duration: 2,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // Debo: slow nod
+  private animateNod(): void {
+    gsap.to(this.el, {
+      y: '+=2',
+      duration: 2.5,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // ── Signature animations ──────────────────────────────
+  private scheduleSignature(): void {
+    const delay = 8000 + Math.random() * 7000;
+    this.signatureTimer = setTimeout(() => {
+      this.playSignature();
+      this.scheduleSignature();
+    }, delay);
+  }
+
+  private playSignature(): void {
+    switch (this.agent.name) {
+      case 'boris':   this.sigBoris(); break;
+      case 'forge':   this.sigForge(); break;
+      case 'winston': this.sigWinston(); break;
+      case 'rocco':   this.sigRocco(); break;
+      case 'stormy':  this.sigStormy(); break;
+      case 'debo':    this.sigDebo(); break;
+    }
+  }
+
+  private sigBoris(): void {
+    const bubble = this.el.querySelector('.status-bubble');
+    const txt = this.el.querySelector('.status-text');
+    if (!bubble || !txt) return;
+    if (txt) (txt as SVGTextElement).textContent = '📨';
+    gsap.fromTo(bubble,
+      { opacity: 0, y: 0 },
+      {
+        keyframes: [
+          { opacity: 1, y: -10, duration: 0.4 },
+          { opacity: 0.9, y: -22, duration: 0.9 },
+          { opacity: 0, y: -38, duration: 0.4 },
+        ],
+      }
+    );
+  }
+
+  private sigForge(): void {
+    const badge = this.el.querySelector('.pr-badge');
+    if (!badge) return;
+    gsap.fromTo(badge,
+      { opacity: 0, y: 0 },
+      {
+        keyframes: [
+          { opacity: 1, y: -12, duration: 0.5 },
+          { opacity: 1, y: -28, duration: 0.9 },
+          { opacity: 0, y: -44, duration: 0.4 },
+        ],
+      }
+    );
+  }
+
+  private sigWinston(): void {
+    const check = this.el.querySelector('.ci-check');
+    if (!check) return;
+    gsap.fromTo(check,
+      { opacity: 0, y: 0, scale: 0.5 },
+      {
+        keyframes: [
+          { opacity: 1, y: -10, scale: 1.2, duration: 0.3 },
+          { opacity: 0.8, y: -22, scale: 1, duration: 0.8 },
+          { opacity: 0, y: -36, duration: 0.4 },
+        ],
+        transformOrigin: 'center center',
+      }
+    );
+  }
+
+  private sigRocco(): void {
+    const dots = this.el.querySelectorAll('.data-dot-1, .data-dot-2, .data-dot-3');
+    gsap.to(dots, {
+      scale: 2,
+      opacity: 1,
+      duration: 0.3,
+      stagger: 0.1,
+      yoyo: true,
+      repeat: 3,
+      ease: 'sine.inOut',
+      transformOrigin: 'center center',
+    });
+  }
+
+  private sigStormy(): void {
+    const notebook = this.el.querySelector('.notebook');
+    if (!notebook) return;
+    gsap.fromTo(notebook,
+      { opacity: 0.5, y: 0 },
+      {
+        keyframes: [
+          { opacity: 1, y: -8, duration: 0.5 },
+          { opacity: 1, y: -18, duration: 0.5 },
+          { opacity: 0, y: -30, duration: 0.4 },
+        ],
+      }
+    );
+  }
+
+  private sigDebo(): void {
+    const server = this.el.querySelector('.server-glow');
+    if (!server) return;
+    gsap.fromTo(server,
+      { opacity: 0.2 },
+      {
+        opacity: 0.9,
+        duration: 0.4,
+        ease: 'power2.inOut',
+        yoyo: true,
+        repeat: 3,
+      }
+    );
+  }
+
+  // ── Blink ──────────────────────────────
+  private startBlink(): void {
+    const schedule = () => {
+      this.blinkTimer = setTimeout(() => {
+        const eyes = this.el.querySelector('.b-eyes');
+        if (eyes) {
+          gsap.to(eyes, {
+            scaleY: 0.08,
+            duration: 0.06,
+            ease: 'power2.in',
+            transformOrigin: '0px -3px',
+            onComplete: () => {
+              gsap.to(eyes, {
+                scaleY: 1,
+                duration: 0.1,
+                ease: 'power2.out',
+                delay: 0.04,
+                transformOrigin: '0px -3px',
+              });
+            },
+          });
+        }
+        schedule();
+      }, 2500 + Math.random() * 3500);
+    };
+    schedule();
+  }
+}
