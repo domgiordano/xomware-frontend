@@ -11,7 +11,7 @@ export class CautionTapeComponent {
     '🚧 UNDER CONSTRUCTION · 🔧 COMING SOON · ⚡ XOMWARE LABS · 🤖 AGENTS BUILDING · ';
 
   /** Duration of one full scroll cycle in seconds. */
-  @Input() public speed: number = 14;
+  @Input() public speed: number = 60;
 
   /**
    * Repeat the text enough times to guarantee seamless looping.
