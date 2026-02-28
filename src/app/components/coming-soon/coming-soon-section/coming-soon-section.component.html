@@ -6,15 +6,20 @@
     <p class="section-subtitle">Forge is hard at work. These ship soon.</p>
   </div>
 
-  <!-- Caution tape directly above the app cards -->
-  <app-caution-tape></app-caution-tape>
+  <!-- Cards zone: cards + diagonal caution tape overlay -->
+  <div class="cards-zone">
+    <!-- Card grid -->
+    <div class="coming-soon-grid">
+      <app-coming-soon-card
+        *ngFor="let app of apps"
+        [app]="app"
+      ></app-coming-soon-card>
+    </div>
 
-  <!-- Card grid -->
-  <div class="coming-soon-grid">
-    <app-coming-soon-card
-      *ngFor="let app of apps"
-      [app]="app"
-    ></app-coming-soon-card>
+    <!-- Diagonal caution tape crossing OVER both cards -->
+    <div class="diagonal-tape-wrap" aria-hidden="true">
+      <app-caution-tape [speed]="120"></app-caution-tape>
+    </div>
   </div>
 
   <!-- Footer hint -->

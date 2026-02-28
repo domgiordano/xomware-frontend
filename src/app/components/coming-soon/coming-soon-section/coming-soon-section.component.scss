@@ -42,6 +42,14 @@
   margin: 0;
 }
 
+// ─── Cards Zone (relative container for diagonal tape overlay) ───────────────
+
+.cards-zone {
+  position: relative;
+  padding: $spacing-xl $spacing-md;
+  overflow: hidden; // clips tape ends cleanly after rotation
+}
+
 // ─── Cards Grid ──────────────────────────────────────────────────────────────
 
 .coming-soon-grid {
@@ -49,12 +57,26 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: $spacing-xl;
-  padding: 0 $spacing-md;
+  position: relative;
+  z-index: 1; // cards sit below the tape overlay
 }
 
 .card-wrapper {
   display: flex;
   justify-content: center;
+}
+
+// ─── Diagonal Tape Overlay ───────────────────────────────────────────────────
+
+.diagonal-tape-wrap {
+  position: absolute;
+  top: 50%;
+  left: -25%;
+  width: 150%;
+  transform: translateY(-50%) rotate(-14deg);
+  z-index: 10;
+  pointer-events: none; // cards underneath remain interactive
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
 }
 
 // ─── Footer Hint ─────────────────────────────────────────────────────────────
