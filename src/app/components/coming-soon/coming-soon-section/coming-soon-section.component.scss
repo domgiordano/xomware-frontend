@@ -1,0 +1,90 @@
+@import 'styles/variables';
+
+// ─── Section Container ────────────────────────────────────────────────────────
+
+.coming-soon-section {
+  width: 100%;
+  padding: 0 0 $spacing-2xl;
+  position: relative;
+  overflow: hidden;
+}
+
+// ─── Decorative Tape ─────────────────────────────────────────────────────────
+
+.caution-tape-decorative {
+  transform: rotate(-2deg) translateY(-8px);
+  opacity: 0.35;
+  pointer-events: none;
+  margin: 4px 0 -4px;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+
+.coming-soon-header {
+  text-align: center;
+  padding: $spacing-2xl $spacing-md $spacing-xl;
+}
+
+.section-eyebrow {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $caution-yellow;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: $text-primary;
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: $text-secondary;
+  font-style: italic;
+  margin: 0;
+}
+
+// ─── Cards Grid ──────────────────────────────────────────────────────────────
+
+.coming-soon-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: $spacing-xl;
+  padding: 0 $spacing-md;
+}
+
+.card-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+// ─── Footer Hint ─────────────────────────────────────────────────────────────
+
+.coming-soon-footer-hint {
+  text-align: center;
+  padding: $spacing-xl $spacing-md $spacing-sm;
+
+  small {
+    font-size: 13px;
+    color: $text-muted;
+    letter-spacing: 0.05em;
+  }
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+
+@media (max-width: $breakpoint-md) {
+  .coming-soon-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+}
