@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- Dumbbell -->
+  <rect x="30" y="44" width="36" height="8" rx="4" fill="#34C759"/>
+  <rect x="14" y="34" width="16" height="28" rx="6" fill="#34C759"/>
+  <rect x="66" y="34" width="16" height="28" rx="6" fill="#34C759"/>
+  <rect x="10" y="40" width="8" height="16" rx="4" fill="#2da14a"/>
+  <rect x="78" y="40" width="8" height="16" rx="4" fill="#2da14a"/>
+  <!-- Lightning bolt -->
+  <polygon points="52,16 44,46 50,46 42,80 62,42 54,42 62,16" fill="#34C759" opacity="0.85"/>
+</svg>

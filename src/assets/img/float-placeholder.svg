@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- Martini glass -->
+  <polygon points="20,20 76,20 48,58" fill="none" stroke="#FFB800" stroke-width="4" stroke-linejoin="round"/>
+  <line x1="48" y1="58" x2="48" y2="78" stroke="#FFB800" stroke-width="4" stroke-linecap="round"/>
+  <line x1="34" y1="78" x2="62" y2="78" stroke="#FFB800" stroke-width="4" stroke-linecap="round"/>
+  <!-- Olive -->
+  <circle cx="58" cy="28" r="5" fill="#FFB800"/>
+  <line x1="30" y1="20" x2="70" y2="20" stroke="#FFB800" stroke-width="2" stroke-dasharray="4 3" opacity="0.6"/>
+</svg>

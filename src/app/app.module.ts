@@ -15,6 +15,9 @@ import { FileEditorComponent } from './components/command-center/file-editor/fil
 import { ActivityLogComponent } from './components/command-center/activity-log/activity-log.component';
 import { PixelOfficeComponent } from './components/command-center/pixel-office/pixel-office.component';
 import { InfraDashboardComponent } from './components/command-center/infra-dashboard/infra-dashboard.component';
+import { CautionTapeComponent } from './components/caution-tape/caution-tape.component';
+import { ComingSoonCardComponent } from './components/coming-soon-card/coming-soon-card.component';
+import { ComingSoonSectionComponent } from './components/coming-soon-section/coming-soon-section.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,9 @@ import { InfraDashboardComponent } from './components/command-center/infra-dashb
     ActivityLogComponent,
     PixelOfficeComponent,
     InfraDashboardComponent,
+    CautionTapeComponent,
+    ComingSoonCardComponent,
+    ComingSoonSectionComponent,
   ],
   imports: [
     BrowserModule,

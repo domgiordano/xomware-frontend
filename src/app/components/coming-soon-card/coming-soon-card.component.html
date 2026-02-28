@@ -1,0 +1,16 @@
+<div class="cs-card" [style.--app-color]="app.color" [style.--app-color-rgb]="app.colorRgb">
+  <div class="cs-card__badge">COMING SOON</div>
+  <div class="cs-card__shimmer"></div>
+  <div class="cs-card__logo">
+    <img [src]="app.logo" [alt]="app.name + ' logo'" />
+  </div>
+  <div class="cs-card__body">
+    <h3 class="cs-card__name">{{ app.name }}</h3>
+    <p class="cs-card__tagline">{{ app.tagline }}</p>
+    <p class="cs-card__desc">{{ app.description }}</p>
+  </div>
+  <div class="cs-card__footer">
+    <span class="cs-card__platform">{{ app.platform }}</span>
+    <button class="cs-card__notify">Notify Me</button>
+  </div>
+</div>

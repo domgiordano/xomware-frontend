@@ -1,0 +1,39 @@
+.caution-tape {
+  width: 100%;
+  overflow: hidden;
+  background: repeating-linear-gradient(
+    -45deg,
+    #FFD600 0px, #FFD600 22px,
+    #1a1a1a 22px, #1a1a1a 44px
+  );
+  padding: 10px 0;
+  position: relative;
+
+  &__track {
+    display: flex;
+    white-space: nowrap;
+  }
+
+  &__text {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: #1a1a1a;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    animation: scroll-marquee 14s linear infinite;
+    padding-right: 40px;
+  }
+}
+
+@keyframes scroll-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caution-tape__text {
+    animation: none;
+  }
+}

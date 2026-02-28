@@ -1,0 +1,19 @@
+<section class="cs-section">
+  <app-caution-tape></app-caution-tape>
+
+  <div class="cs-section__header">
+    <span class="cs-section__eyebrow">🔧 The Build Queue</span>
+    <h2 class="cs-section__title">What's Coming Next</h2>
+    <p class="cs-section__subtitle">Forge is hard at work. These ship soon.</p>
+  </div>
+
+  <div class="cs-section__grid">
+    <app-coming-soon-card *ngFor="let app of apps" [app]="app"></app-coming-soon-card>
+  </div>
+
+  <p class="cs-section__footer-hint">Coming to iOS</p>
+
+  <div class="cs-section__caution-bottom">
+    <app-caution-tape></app-caution-tape>
+  </div>
+</section>
