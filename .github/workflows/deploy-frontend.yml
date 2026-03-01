@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
+    # Run on push, workflow_dispatch, or merged PRs (not just closed)
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
