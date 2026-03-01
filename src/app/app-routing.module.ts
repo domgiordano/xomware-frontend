@@ -4,9 +4,11 @@ import { LandingComponent } from './components/landing/landing.component';
 import { CommandCenterComponent } from './components/command-center/command-center.component';
 import { AuthGateComponent } from './components/command-center/auth-gate/auth-gate.component';
 import { AuthGuard } from './guards/auth.guard';
+import { PrDashboardComponent } from './components/pr-dashboard/pr-dashboard.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
+  { path: 'prs', component: PrDashboardComponent },
   // Redirect bare /command to the default tab
   { path: 'command', redirectTo: 'command/board', pathMatch: 'full' },
   // Login must come before the :tab wildcard
