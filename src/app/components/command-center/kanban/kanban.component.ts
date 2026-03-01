@@ -31,6 +31,9 @@ export class KanbanComponent implements OnInit, OnDestroy {
   repoFilter = '';
   repos: string[] = [];
 
+  // Ticket detail
+  selectedIssueUrl: string | null = null;
+
   // Inbox
   showAddIdea = false;
   ideaTitle = '';
@@ -162,6 +165,16 @@ export class KanbanComponent implements OnInit, OnDestroy {
 
   onDragEnd(): void {
     this.dragCardId = null;
+  }
+
+  openTicketDetail(card: BoardCard): void {
+    if (card.issueUrl) {
+      this.selectedIssueUrl = card.issueUrl;
+    }
+  }
+
+  closeTicketDetail(): void {
+    this.selectedIssueUrl = null;
   }
 
   get liveStatus(): string {

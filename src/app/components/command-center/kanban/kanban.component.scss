@@ -138,6 +138,10 @@
   cursor: grab;
   transition: all $transition-base;
 
+  &.clickable {
+    cursor: pointer;
+  }
+
   &:hover {
     border-color: rgba($brand-cyan, 0.3);
     transform: translateY(-1px);

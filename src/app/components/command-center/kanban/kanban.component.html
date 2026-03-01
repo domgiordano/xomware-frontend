@@ -41,10 +41,12 @@
         <div
           *ngFor="let card of getColumnCards(col.id)"
           class="kanban-card"
+          [class.clickable]="!!card.issueUrl"
           draggable="true"
           [class.dragging]="dragCardId === card.id"
           (dragstart)="onDragStart($event, card)"
           (dragend)="onDragEnd()"
+          (click)="openTicketDetail(card)"
         >
           <div class="card-header">
             <span class="card-title">{{ card.title }}</span>
@@ -131,4 +133,10 @@
       </div>
     </div>
   </div>
+
+  <!-- Ticket Detail Modal -->
+  <app-ticket-detail-modal
+    [issueUrl]="selectedIssueUrl"
+    (closed)="closeTicketDetail()"
+  ></app-ticket-detail-modal>
 </div>
