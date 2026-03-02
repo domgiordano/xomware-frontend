@@ -8,12 +8,13 @@ import { PrDashboardComponent } from './components/pr-dashboard/pr-dashboard.com
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
+  // Standalone feature routes (no auth required — public data)
   { path: 'prs', component: PrDashboardComponent },
   // Redirect bare /command to the default tab
   { path: 'command', redirectTo: 'command/board', pathMatch: 'full' },
   // Login must come before the :tab wildcard
   { path: 'command/login', component: AuthGateComponent },
-  // Child tab routes — kanban→board, files, activity, infra, office
+  // Child tab routes — kanban→board, files, activity, infra, office, analytics, prs, ci, issues
   { path: 'command/:tab', component: CommandCenterComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' },
 ];

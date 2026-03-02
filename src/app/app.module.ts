@@ -25,10 +25,14 @@ import { ComingSoonSectionComponent } from './components/coming-soon/coming-soon
 import { AgentBlobComponent } from './components/agent-scene/agent-blob/agent-blob.component';
 import { AgentSceneComponent } from './components/agent-scene/agent-scene/agent-scene.component';
 import { AgentStatusModalComponent } from './components/agent-scene/agent-status-modal/agent-status-modal.component';
+import { AgentStatusComponent } from './components/agent-status/agent-status.component';
+
+// Command Center feature components
 import { TicketDetailModalComponent } from './components/command-center/ticket-detail-modal/ticket-detail-modal.component';
 import { AnalyticsDashboardComponent } from './components/command-center/analytics-dashboard/analytics-dashboard.component';
+
+// Standalone feature views
 import { PrDashboardComponent } from './components/pr-dashboard/pr-dashboard.component';
-import { AgentStatusComponent } from './components/agent-status/agent-status.component';
 
 @NgModule({
   declarations: [
@@ -51,11 +55,12 @@ import { AgentStatusComponent } from './components/agent-status/agent-status.com
     AgentBlobComponent,
     AgentSceneComponent,
     AgentStatusModalComponent,
-    TicketDetailModalComponent,
-AnalyticsDashboardComponent,
-AgentStatusComponent,
-PrDashboardComponent,
     AgentStatusComponent,
+    // Command Center features
+    TicketDetailModalComponent,
+    AnalyticsDashboardComponent,
+    // Standalone views
+    PrDashboardComponent,
   ],
   imports: [
     BrowserModule,
