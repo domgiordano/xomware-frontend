@@ -27,6 +27,7 @@ import { AgentSceneComponent } from './components/agent-scene/agent-scene/agent-
 import { AgentStatusModalComponent } from './components/agent-scene/agent-status-modal/agent-status-modal.component';
 import { TicketDetailModalComponent } from './components/command-center/ticket-detail-modal/ticket-detail-modal.component';
 import { AnalyticsDashboardComponent } from './components/command-center/analytics-dashboard/analytics-dashboard.component';
+import { PrDashboardComponent } from './components/pr-dashboard/pr-dashboard.component';
 import { AgentStatusComponent } from './components/agent-status/agent-status.component';
 
 @NgModule({
@@ -53,6 +54,8 @@ import { AgentStatusComponent } from './components/agent-status/agent-status.com
     TicketDetailModalComponent,
 AnalyticsDashboardComponent,
 AgentStatusComponent,
+PrDashboardComponent,
+    AgentStatusComponent,
   ],
   imports: [
     BrowserModule,
