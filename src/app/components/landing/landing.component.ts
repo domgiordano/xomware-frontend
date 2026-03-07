@@ -27,6 +27,30 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
 
   apps: AppCard[] = [
     {
+      name: 'xomware',
+      description: 'The mothership. Home of all Xomware apps, agents & infrastructure.',
+      color: '#f97316',
+      url: 'https://xomware.com',
+      monsterState: 'wave',
+      logo: 'assets/img/xomware-icon-transparent-background.png',
+    },
+    {
+      name: 'Float',
+      description: 'Real-time deals for bars & restaurants. Live happy hours near you.',
+      color: '#FFB800',
+      url: 'https://float.xomware.com',
+      monsterState: 'idle',
+      logo: 'assets/img/float-placeholder.svg',
+    },
+    {
+      name: 'xomfit',
+      description: 'Social fitness & lifting tracker. Track lifts, challenge friends.',
+      color: '#34C759',
+      url: 'https://xomfit.xomware.com',
+      monsterState: 'idle',
+      logo: 'assets/img/xomfit-placeholder.svg',
+    },
+    {
       name: 'xomify',
       description: 'Your Spotify stats, wrapped your way. Top songs, artists, genres & more.',
       color: '#9c0abf',
