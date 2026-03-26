@@ -8,7 +8,17 @@
       <filter id="blobBlur">
         <feGaussianBlur stdDeviation="3" />
       </filter>
+      <filter id="lightningGlow">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
     </defs>
+
+    <!-- Lightning layer -->
+    <g class="lightning-layer"></g>
 
     <!-- Blob 0 -->
     <g class="blob blob-0" filter="url(#blobBlur)">

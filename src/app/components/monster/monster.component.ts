@@ -28,6 +28,7 @@ export class MonsterComponent implements AfterViewInit, OnDestroy {
   ];
 
   private reducedMotion = false;
+  private lightningTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngAfterViewInit(): void {
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,6 +38,7 @@ export class MonsterComponent implements AfterViewInit, OnDestroy {
       this.placeStatic();
     } else {
       this.startAmbient();
+      this.scheduleLightning();
     }
   }
 
@@ -139,7 +141,133 @@ export class MonsterComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // ── Lightning ──────────────────────────────────
+
+  private scheduleLightning(): void {
+    const delay = 4000 + Math.random() * 8000; // 4-12s between strikes
+    this.lightningTimer = setTimeout(() => {
+      this.strikeLightning();
+      this.scheduleLightning();
+    }, delay);
+  }
+
+  private strikeLightning(): void {
+    const layer = this.svg.querySelector('.lightning-layer');
+    if (!layer) return;
+
+    const ns = 'http://www.w3.org/2000/svg';
+
+    // Random start point along top portion of viewport
+    const startX = 100 + Math.random() * 1720;
+    const startY = Math.random() * 200;
+
+    // Generate jagged bolt path
+    const path = this.generateBoltPath(startX, startY, 300 + Math.random() * 500);
+
+    // Pick a color from brand palette (weighted toward cyan)
+    const color = Math.random() > 0.3
+      ? this.BRAND_COLORS[0] // cyan most of the time
+      : this.BRAND_COLORS[Math.floor(Math.random() * this.BRAND_COLORS.length)];
+
+    // Main bolt
+    const bolt = document.createElementNS(ns, 'path');
+    bolt.setAttribute('d', path);
+    bolt.setAttribute('fill', 'none');
+    bolt.setAttribute('stroke', color);
+    bolt.setAttribute('stroke-width', '2');
+    bolt.setAttribute('stroke-linecap', 'round');
+    bolt.setAttribute('filter', 'url(#lightningGlow)');
+    bolt.setAttribute('opacity', '0');
+    layer.appendChild(bolt);
+
+    // Optional branch (50% chance)
+    let branch: SVGPathElement | null = null;
+    if (Math.random() > 0.5) {
+      const segments = path.split(' L');
+      if (segments.length > 3) {
+        const branchStart = Math.floor(segments.length * 0.3) + Math.floor(Math.random() * (segments.length * 0.4));
+        const branchCoords = segments[branchStart]?.replace('M', '').trim().split(',');
+        if (branchCoords && branchCoords.length === 2) {
+          const bx = parseFloat(branchCoords[0]);
+          const by = parseFloat(branchCoords[1]);
+          const branchPath = this.generateBoltPath(bx, by, 80 + Math.random() * 150);
+          branch = document.createElementNS(ns, 'path');
+          branch.setAttribute('d', branchPath);
+          branch.setAttribute('fill', 'none');
+          branch.setAttribute('stroke', color);
+          branch.setAttribute('stroke-width', '1');
+          branch.setAttribute('stroke-linecap', 'round');
+          branch.setAttribute('filter', 'url(#lightningGlow)');
+          branch.setAttribute('opacity', '0');
+          layer.appendChild(branch);
+        }
+      }
+    }
+
+    // Flash animation: quick flash in, hold, fade out
+    const elements = branch ? [bolt, branch] : [bolt];
+    const tl = gsap.timeline({
+      onComplete: () => {
+        elements.forEach(el => el.remove());
+      },
+    });
+
+    tl.to(elements, {
+      attr: { opacity: 0.7 + Math.random() * 0.3 },
+      duration: 0.05,
+      ease: 'power4.in',
+    })
+    .to(elements, {
+      attr: { opacity: 0 },
+      duration: 0.08,
+    })
+    // Double-strike effect (lightning often flashes twice)
+    .to(elements, {
+      attr: { opacity: 0.4 + Math.random() * 0.4 },
+      duration: 0.03,
+      delay: 0.05 + Math.random() * 0.1,
+    })
+    .to(elements, {
+      attr: { opacity: 0 },
+      duration: 0.15 + Math.random() * 0.2,
+      ease: 'power2.out',
+    });
+  }
+
+  private generateBoltPath(startX: number, startY: number, length: number): string {
+    let x = startX;
+    let y = startY;
+    const segments: string[] = [`M${x},${y}`];
+    const numSegments = 6 + Math.floor(Math.random() * 8);
+    const segLength = length / numSegments;
+
+    for (let i = 0; i < numSegments; i++) {
+      // Jagged horizontal offset, mostly downward
+      x += (Math.random() - 0.5) * segLength * 1.5;
+      y += segLength * (0.6 + Math.random() * 0.6);
+      // Keep within viewport bounds
+      x = Math.max(50, Math.min(1870, x));
+      y = Math.min(1050, y);
+      segments.push(`L${Math.round(x)},${Math.round(y)}`);
+    }
+
+    return segments.join(' ');
+  }
+
+  // ── Cleanup ───────────────────────────────────
+
   private killAll(): void {
+    if (this.lightningTimer) {
+      clearTimeout(this.lightningTimer);
+      this.lightningTimer = null;
+    }
+
+    // Remove any in-flight lightning bolts
+    const layer = this.svg.querySelector('.lightning-layer');
+    if (layer) {
+      layer.innerHTML = '';
+    }
+
     const allEls = this.qa('*');
     gsap.killTweensOf(allEls);
 
