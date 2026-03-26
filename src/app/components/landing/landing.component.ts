@@ -139,18 +139,22 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     });
 
     // App cards stagger in
-    gsap.from('.app-card', {
-      scrollTrigger: {
-        trigger: '.cards-container',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      },
-      opacity: 0,
-      y: 60,
-      stagger: 0.1,
-      duration: 0.7,
-      ease: 'power3.out',
-    });
+    const cards = gsap.utils.toArray('.app-card');
+    if (cards.length) {
+      gsap.set(cards, { opacity: 0, y: 60 });
+      gsap.to(cards, {
+        scrollTrigger: {
+          trigger: '.cards-container',
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'power3.out',
+      });
+    }
 
     // Footer slide in
     gsap.from('.footer-inner', {
