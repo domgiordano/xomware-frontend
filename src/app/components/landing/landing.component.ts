@@ -71,7 +71,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
       color: '#34C759',
       colorRgb: '52, 199, 89',
       url: 'https://xomfit.xomware.com',
-      logo: 'assets/img/xomfit-placeholder.svg',
+      logo: 'assets/img/xomfit-banner.png',
       tag: 'iOS · Coming Soon',
       status: 'coming-soon',
     },
