@@ -56,16 +56,6 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
       status: 'live',
     },
     {
-      name: 'Hornets SE Champs',
-      description: 'Hornets SE Division Win Bet Tracker',
-      color: '#00788C',
-      colorRgb: '0, 120, 140',
-      url: 'https://hornets-southeast-champs.xomware.com',
-      logo: 'assets/img/hornets-placeholder.svg',
-      tag: 'Web App',
-      status: 'live',
-    },
-    {
       name: 'XomFit',
       description: 'Social fitness & lifting tracker. Challenge friends, follow AI workout plans.',
       color: '#34C759',
