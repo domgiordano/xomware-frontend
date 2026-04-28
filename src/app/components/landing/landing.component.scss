@@ -86,8 +86,97 @@
   height: 16px;
 }
 
+// ── Report Issue dropdown ────────────────────────
+.report-menu-wrapper {
+  position: relative;
+  display: inline-flex;
+}
 
-// ── Hero Section ─────────────────────────────────
+.report-menu-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 4px;
+    border-radius: $radius-sm;
+  }
+}
+
+.report-menu-caret {
+  width: 14px;
+  height: 14px;
+  transition: transform $transition-fast;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+.report-menu {
+  position: absolute;
+  top: calc(100% + #{$spacing-sm});
+  right: 0;
+  min-width: 240px;
+  padding: $spacing-sm;
+  background: rgba(15, 17, 25, 0.95);
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 100;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.report-menu-header {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-secondary;
+  padding: $spacing-sm $spacing-md $spacing-xs;
+}
+
+.report-menu-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-sm;
+  text-decoration: none;
+  color: $text-primary;
+  transition: background $transition-fast, color $transition-fast;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba($brand-cyan, 0.1);
+    color: $brand-cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: -2px;
+  }
+}
+
+.report-menu-label {
+  font-size: 0.875rem;
+  font-weight: $font-weight-medium;
+}
+
+.report-menu-repo {
+  font-size: 0.7rem;
+  color: $text-secondary;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+
+// ── Profile / Hero Section ───────────────────────
 .hero {
   width: 100%;
   min-height: 100vh;
@@ -105,6 +194,121 @@
   max-width: 720px;
 }
 
+// ── Profile Block ────────────────────────────────
+.profile-headshot {
+  margin-bottom: $spacing-lg;
+  animation: fadeIn 0.6s ease-out both;
+}
+
+.profile-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba($brand-cyan, 0.35);
+  box-shadow: 0 0 0 6px rgba($brand-cyan, 0.07), $shadow-lg;
+  display: block;
+  margin: 0 auto;
+}
+
+.profile-name {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: $font-weight-extrabold;
+  color: $text-primary;
+  margin-bottom: $spacing-sm;
+  letter-spacing: -0.02em;
+  animation: fadeIn 0.7s ease-out 0.1s both;
+}
+
+.profile-role {
+  font-size: 1rem;
+  color: $text-secondary;
+  margin-bottom: $spacing-md;
+  animation: fadeIn 0.7s ease-out 0.15s both;
+}
+
+.profile-role-link {
+  color: $brand-cyan;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $brand-cyan-light;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+.profile-bio {
+  font-size: 1.05rem;
+  color: $text-secondary;
+  line-height: 1.65;
+  max-width: 520px;
+  margin: 0 auto $spacing-xl;
+  animation: fadeIn 0.7s ease-out 0.2s both;
+}
+
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  justify-content: center;
+  margin-bottom: $spacing-xl;
+  animation: fadeIn 0.7s ease-out 0.25s both;
+}
+
+.profile-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  height: 40px;
+  padding: 0 $spacing-md;
+  border-radius: $radius-pill;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $glass-border;
+  color: $text-secondary;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: $font-weight-medium;
+  letter-spacing: 0.01em;
+  transition: all $transition-base;
+
+  &:hover {
+    color: $brand-cyan;
+    background: rgba($brand-cyan, 0.08);
+    border-color: rgba($brand-cyan, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba($brand-cyan, 0.15);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+.profile-link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.profile-link-label {
+  white-space: nowrap;
+}
+
+// ── Hero Badge (kept for any future reuse) ────────
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -462,6 +666,63 @@
   height: 20px;
 }
 
+// ── Platform Section Headings ────────────────────
+.platform-heading {
+  font-size: 1rem;
+  font-weight: $font-weight-semibold;
+  color: $text-secondary;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  &--ios {
+    margin-top: $spacing-3xl;
+  }
+}
+
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: rgba($brand-cyan, 0.08);
+  border: 1px solid rgba($brand-cyan, 0.2);
+  border-radius: $radius-pill;
+  font-size: 0.65rem;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.1em;
+  color: $brand-cyan;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+// ── iOS Whitelist Note ────────────────────────────
+.ios-whitelist-note {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin-bottom: $spacing-xl;
+  line-height: 1.5;
+}
+
+.ios-whitelist-link {
+  color: $brand-cyan;
+  text-decoration: none;
+  font-weight: $font-weight-medium;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $brand-cyan-light;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
 // ── Footer ───────────────────────────────────────
 .footer {
   width: 100%;
@@ -681,6 +942,46 @@
   height: 20px;
 }
 
+.mobile-menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $glass-border;
+}
+
+.mobile-menu-section-label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-secondary;
+  padding: 0 $spacing-sm $spacing-xs;
+}
+
+.mobile-menu-sublink {
+  color: $text-secondary;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-sm;
+  transition: color $transition-fast, background $transition-fast;
+
+  &:hover,
+  &:focus-visible {
+    color: $text-primary;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: -2px;
+  }
+}
+
 // ── Responsive ───────────────────────────────────
 @media (max-width: $breakpoint-lg) {
   .cards-container {
@@ -701,8 +1002,16 @@
     display: block;
   }
 
-  .hero-title {
-    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  .profile-name {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+  }
+
+  .profile-links {
+    gap: $spacing-sm;
+  }
+
+  .platform-heading--ios {
+    margin-top: $spacing-2xl;
   }
 
   .hero-ctas {
@@ -781,7 +1090,12 @@
   .hero-badge,
   .hero-title,
   .hero-subtitle,
-  .hero-ctas {
+  .hero-ctas,
+  .profile-headshot,
+  .profile-name,
+  .profile-role,
+  .profile-bio,
+  .profile-links {
     animation: none !important;
     opacity: 1 !important;
   }
