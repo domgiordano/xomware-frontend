@@ -83,6 +83,17 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
       platform: 'web',
     },
     {
+      name: 'Sun God Derby',
+      description: "Grant's annual Kentucky Derby pool. Tail or fade his picks, climb the leaderboard.",
+      color: '#C8102E',
+      colorRgb: '200, 16, 46',
+      url: 'https://derby.xomware.com',
+      logo: 'assets/img/sun-god-derby-icon.png',
+      tag: 'Web App',
+      status: 'live',
+      platform: 'web',
+    },
+    {
       name: 'Xomify',
       description: 'Your Spotify stats on iOS. Native app available on TestFlight.',
       color: '#9c0abf',
