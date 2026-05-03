@@ -41,7 +41,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     { label: 'Xomper (iOS)', repo: 'Xomware/xomper-ios' },
     { label: 'XomFit (iOS)', repo: 'Xomware/xomfit-ios' },
     { label: 'Float (iOS)', repo: 'Xomware/Float' },
-    { label: 'Xom Appetite', repo: 'Xomware/meals-frontend' },
+    { label: 'Xom Appétit', repo: 'Xomware/xomappetit-frontend' },
     { label: 'xomware.com', repo: 'Xomware/xomware-frontend' },
   ];
 
@@ -95,12 +95,12 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
       platform: 'web',
     },
     {
-      name: 'Xom Appetite',
+      name: 'Xom Appétit',
       description: 'Home-cooking tracker with recipes, ingredients & macros. Rated by three loud chefs.',
       color: '#ff6b6b',
       colorRgb: '255, 107, 107',
-      url: 'https://xomappetite.xomware.com',
-      logo: 'assets/img/xom-appetite-placeholder.svg',
+      url: 'https://xomappétit.xomware.com',
+      logo: 'assets/img/xomappetit-placeholder.svg',
       tag: 'Web App',
       status: 'coming-soon',
       platform: 'web',
