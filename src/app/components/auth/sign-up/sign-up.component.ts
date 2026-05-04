@@ -92,6 +92,22 @@ export class SignUpComponent {
     });
   }
 
+  onGoogleSignIn(): void {
+    // Phase 4: kick off the Google OAuth redirect through Cognito Hosted UI.
+    // The PreSignUp Lambda links to an existing local account if one exists.
+    if (this.loading) return;
+    this.loading = true;
+    this.errorMessage = '';
+    this.analytics.track('sign_up_initiate', { method: 'google' });
+    this.cognito.signInWithGoogle().subscribe({
+      // No `next` handler needed — Amplify navigates the page to Google.
+      error: (err: Error) => {
+        this.loading = false;
+        this.errorMessage = this.friendlyError(err);
+      },
+    });
+  }
+
   private friendlyError(err: Error): string {
     const name = (err as { name?: string }).name || '';
     const msg = err.message || '';
