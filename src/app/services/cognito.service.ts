@@ -102,9 +102,17 @@ export class CognitoService implements OnDestroy {
     password: string,
     preferredUsername: string,
   ): Observable<{ userConfirmed: boolean }> {
+    // The shared pool uses alias_attributes = ["email", "preferred_username"]
+    // (Option B), which means the underlying Cognito Username CANNOT be in
+    // email format. Generate an opaque UUID — sign-in still works with email
+    // because email is an alias.
+    const opaqueUsername =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     return from(
       signUp({
-        username: email,
+        username: opaqueUsername,
         password,
         options: {
           userAttributes: {
