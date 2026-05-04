@@ -5,12 +5,14 @@ import { CommandCenterComponent } from './components/command-center/command-cent
 import { AuthGateComponent } from './components/command-center/auth-gate/auth-gate.component';
 import { AuthGuard } from './guards/auth.guard';
 import { cognitoAuthGuard } from './guards/cognito-auth.guard';
+import { adminGuard } from './guards/admin.guard';
 import { SignInComponent } from './components/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
 import { VerifyComponent } from './components/auth/verify/verify.component';
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
 import { CallbackComponent } from './components/auth/callback/callback.component';
 import { ProfileComponent } from './components/auth/profile/profile.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent, canActivate: [cognitoAuthGuard] },
@@ -22,6 +24,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'command/login', component: AuthGateComponent },
   { path: 'command', component: CommandCenterComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
   { path: '**', redirectTo: '' },
 ];
 
