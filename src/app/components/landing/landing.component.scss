@@ -489,82 +489,117 @@
   z-index: 1;
 }
 
-.locked-launcher {
-  margin: $spacing-xl auto 0;
-  max-width: 480px;
-  padding: $spacing-2xl $spacing-xl;
-  background: rgba(24, 24, 27, 0.6);
-  border: 1px solid rgba(0, 180, 216, 0.18);
+// Anonymous gate — full-viewport centered card. Replaces the entire
+// landing for signed-out visitors. Brand mark + sign-in CTA only.
+.anon-gate {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+}
+
+.anon-gate-card {
+  width: 100%;
+  max-width: 420px;
+  padding: $spacing-2xl;
+  background: rgba(24, 24, 27, 0.7);
+  border: 1px solid rgba(0, 180, 216, 0.2);
   border-radius: 16px;
   text-align: center;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+}
 
-  &-icon {
-    color: $brand-cyan;
-    margin-bottom: $spacing-md;
-    svg {
-      width: 32px;
-      height: 32px;
-    }
+.anon-gate-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  img {
+    width: 32px;
+    height: 32px;
   }
+}
 
-  &-title {
-    font-size: 22px;
-    font-weight: 700;
+.anon-gate-wordmark {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: $brand-cyan;
+}
+
+.anon-gate-tagline {
+  color: #a1a1aa;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 $spacing-lg;
+}
+
+.anon-gate-actions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-lg;
+}
+
+.anon-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d4d4d8;
+  background: transparent;
+  transition: all 150ms ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $brand-cyan;
     color: #fafafa;
-    margin: 0 0 $spacing-sm;
   }
 
-  &-copy {
-    color: #a1a1aa;
-    font-size: 14px;
-    line-height: 1.5;
-    margin: 0 0 $spacing-lg;
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 2px;
   }
 
-  &-actions {
-    display: flex;
-    gap: $spacing-md;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  &-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #d4d4d8;
-    background: transparent;
-    transition: all 150ms ease;
+  &.primary {
+    background: linear-gradient(90deg, $brand-cyan, #48cae4);
+    border-color: transparent;
+    color: #0a0a0b;
 
     &:hover,
     &:focus-visible {
-      border-color: $brand-cyan;
-      color: #fafafa;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $brand-cyan;
-      outline-offset: 2px;
-    }
-
-    &.primary {
-      background: linear-gradient(90deg, $brand-cyan, #48cae4);
-      border-color: transparent;
+      filter: brightness(1.05);
       color: #0a0a0b;
-
-      &:hover,
-      &:focus-visible {
-        filter: brightness(1.05);
-        color: #0a0a0b;
-      }
     }
+  }
+}
+
+.anon-gate-link {
+  display: inline-block;
+  font-size: 12px;
+  color: #71717a;
+  text-decoration: none;
+  transition: color 150ms ease;
+
+  &:hover,
+  &:focus-visible {
+    color: $brand-cyan;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 }
 
