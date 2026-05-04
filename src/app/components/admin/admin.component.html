@@ -1,0 +1,151 @@
+<div class="admin">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <a routerLink="/" class="admin-logo" aria-label="Back to Xomware home">
+        <img src="assets/img/xomware-icon-transparent-background.png" alt="Xomware" />
+      </a>
+      <h1 class="admin-title">Admin</h1>
+    </div>
+    <div class="admin-header-right">
+      <button type="button" class="admin-signout" (click)="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <div class="admin-grid">
+      <!-- Events card -->
+      <section class="card events-card" aria-labelledby="events-heading">
+        <div class="card-header">
+          <div>
+            <h2 id="events-heading">Events</h2>
+            <p class="card-subtitle">Recent sign-ins and sign-ups</p>
+          </div>
+          <form
+            class="date-form"
+            [formGroup]="dateForm"
+            (ngSubmit)="loadEvents()"
+          >
+            <label class="visually-hidden" for="events-date">Date</label>
+            <input
+              id="events-date"
+              type="date"
+              class="date-input"
+              formControlName="date"
+            />
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="eventsLoading"
+            >
+              {{ eventsLoading ? 'Loading…' : 'Load' }}
+            </button>
+          </form>
+        </div>
+
+        <div *ngIf="eventsError" class="error-banner" role="alert">
+          <span>{{ eventsError }}</span>
+          <button type="button" class="btn-link" (click)="loadEvents()">Retry</button>
+        </div>
+
+        <div *ngIf="eventsLoading && events.length === 0" class="loading-state">
+          Loading events…
+        </div>
+
+        <div
+          *ngIf="!eventsLoading && events.length === 0 && !eventsError"
+          class="empty-state"
+        >
+          No events for {{ eventsDate || (dateForm.value.date) }}.
+        </div>
+
+        <div *ngIf="events.length > 0" class="events-table" role="table">
+          <div class="events-row events-head" role="row">
+            <span class="col-time" role="columnheader">Time</span>
+            <span class="col-type" role="columnheader">Type</span>
+            <span class="col-email" role="columnheader">Email</span>
+            <span class="col-idp" role="columnheader">Provider</span>
+          </div>
+          <div
+            *ngFor="let ev of events"
+            class="events-row"
+            role="row"
+          >
+            <span class="col-time" role="cell">{{ formatTime(ev.eventTime) }}</span>
+            <span class="col-type" role="cell">
+              <span
+                class="pill"
+                [class.pill-signin]="ev.eventType === 'signin'"
+                [class.pill-signup]="ev.eventType === 'signup'"
+              >{{ ev.eventType }}</span>
+            </span>
+            <span class="col-email" role="cell">{{ ev.email || '—' }}</span>
+            <span class="col-idp" role="cell">{{ ev.identityProvider || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer" *ngIf="eventsCursor">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="loadMoreEvents()"
+            [disabled]="eventsLoadingMore"
+          >
+            {{ eventsLoadingMore ? 'Loading…' : 'Load more' }}
+          </button>
+        </div>
+      </section>
+
+      <!-- Cost card -->
+      <section class="card cost-card" aria-labelledby="cost-heading">
+        <div class="card-header">
+          <div>
+            <h2 id="cost-heading">Month-to-date cost</h2>
+            <p class="card-subtitle">
+              <ng-container *ngIf="cost; else costSubtitleFallback">
+                {{ formatRange(cost.start, cost.end) }}
+              </ng-container>
+              <ng-template #costSubtitleFallback>AWS spend, current period</ng-template>
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="loadCost()"
+            [disabled]="costLoading"
+          >
+            {{ costLoading ? 'Refreshing…' : 'Refresh' }}
+          </button>
+        </div>
+
+        <div *ngIf="costError" class="error-banner" role="alert">
+          <span>{{ costError }}</span>
+          <button type="button" class="btn-link" (click)="loadCost()">Retry</button>
+        </div>
+
+        <div *ngIf="costLoading && !cost" class="loading-state">
+          Loading cost…
+        </div>
+
+        <ng-container *ngIf="cost && !costLoading">
+          <div class="cost-total-row">
+            <span class="cost-total">{{ formatMoney(cost.total, cost.currency) }}</span>
+            <span *ngIf="cost.cached" class="pill pill-cached">cached</span>
+          </div>
+
+          <div class="cost-services">
+            <div
+              *ngFor="let svc of cost.services"
+              class="cost-row"
+            >
+              <span class="cost-service">{{ svc.service }}</span>
+              <span class="cost-amount">{{ formatMoney(svc.amount, cost.currency) }}</span>
+            </div>
+            <div *ngIf="cost.services.length === 0" class="empty-state-small">
+              No services billed yet.
+            </div>
+          </div>
+        </ng-container>
+      </section>
+    </div>
+  </main>
+</div>
