@@ -75,9 +75,15 @@ export class SignUpComponent {
     };
 
     this.cognito.signUp(email, password, preferredUsername).subscribe({
-      next: () => {
+      next: ({ username }) => {
         this.analytics.track('sign_up', { method: 'cognito' });
-        this.router.navigate(['/auth/verify'], { queryParams: { email } });
+        // Pass the opaque Username (UUID) to verify so confirmSignUp can
+        // address the user directly — email aliases aren't reliable on
+        // unconfirmed accounts (multiple unconfirmed users can share an
+        // email; alias-resolution returns ambiguous and 400s the verify).
+        this.router.navigate(['/auth/verify'], {
+          queryParams: { email, username },
+        });
       },
       error: (err: Error) => {
         this.loading = false;
