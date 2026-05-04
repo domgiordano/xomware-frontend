@@ -160,7 +160,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
       color: '#C8102E',
       colorRgb: '200, 16, 46',
       url: 'https://derby.xomware.com',
-      logo: 'assets/img/sun-god-derby-icon.png',
+      logo: 'assets/img/sun-god-derby-banner.png',
       tag: 'Web App',
       status: 'live',
       platform: 'web',
