@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Stock user avatar — black silhouette + recolorable accents (X eyes + mouth).
+
+  The eyes and mouth use `currentColor`, so any element wrapping this SVG
+  can tint them via CSS:
+
+    .swatch-coral   { color: #ff6b6b; }
+    .swatch-cyan    { color: #00b4d8; }
+    .swatch-purple  { color: #9c0abf; }
+
+  The black silhouette is locked to #000 and never tints — only the
+  accents follow the user's chosen color.
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 500 500"
+  aria-hidden="true"
+  role="img"
+>
+  <!-- Body silhouette: head + rounded torso. Locked black. -->
+  <g fill="#000">
+    <circle cx="250" cy="170" r="115" />
+    <path d="
+      M 250,300
+      C 130,300  60,365  60,445
+      L 60,500
+      L 440,500
+      L 440,445
+      C 440,365 370,300 250,300 Z
+    " />
+  </g>
+
+  <!-- Recolorable accents. Each X arm is a filled rounded rect rotated
+       around its center — works in every SVG renderer (browsers,
+       ImageMagick, server-side rasterizers). Stroke-based versions look
+       cleaner but break on more limited renderers. -->
+  <!-- Left X eye, centered at (195, 155), arm length 80, thickness 18 -->
+  <rect x="155" y="146" width="80" height="18" rx="9" fill="currentColor" transform="rotate(45 195 155)" />
+  <rect x="155" y="146" width="80" height="18" rx="9" fill="currentColor" transform="rotate(-45 195 155)" />
+  <!-- Right X eye, centered at (305, 155) -->
+  <rect x="265" y="146" width="80" height="18" rx="9" fill="currentColor" transform="rotate(45 305 155)" />
+  <rect x="265" y="146" width="80" height="18" rx="9" fill="currentColor" transform="rotate(-45 305 155)" />
+  <!-- Mouth — pill -->
+  <rect x="185" y="221" width="130" height="18" rx="9" fill="currentColor" />
+</svg>
