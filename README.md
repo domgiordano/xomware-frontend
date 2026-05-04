@@ -17,6 +17,8 @@ Dark-themed landing page with animated mascot monster that reacts to hovering ov
 
 ### Features
 
+- **Cognito sign-in/up** via the shared `xomware-users` User Pool (Phase 2). Routes: `/auth/sign-in`, `/auth/sign-up`, `/auth/verify`, `/auth/forgot-password`, `/auth/callback`. Profile editing + admin features land in Phase 3 and Phase 5.
+- GA4 analytics, scoped to a single measurement ID and identified by Cognito sub on sign-in.
 - Painted brush-stroke X logo with cyan branding
 - Animated monster mascot with context-aware states:
   - **Idle** - breathes, blinks, looks around
@@ -69,6 +71,10 @@ Manual deploys can be triggered via `workflow_dispatch`.
 |--------|-------------|
 | `AWS_ACCESS_KEY_ID` | AWS access key |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key |
+| `COGNITO_USER_POOL_ID` | Shared `xomware-users` User Pool ID (Phase 2) |
+| `COGNITO_CLIENT_ID` | xomware-com app client ID (Phase 2) |
+| `COGNITO_DOMAIN` | Hosted UI domain — `xomware-auth.auth.us-east-1.amazoncognito.com` |
+| `GA4_MEASUREMENT_ID` | GA4 measurement ID (`G-XXXXXXXXXX`). Optional — analytics no-ops when empty. |
 
 ## Project Structure
 

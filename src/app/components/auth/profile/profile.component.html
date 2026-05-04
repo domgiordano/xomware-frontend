@@ -1,0 +1,34 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <a routerLink="/" class="auth-brand" aria-label="Xomware home">
+      <img src="assets/img/xomware-icon-transparent-background.png" alt="" />
+      <span>XOMWARE</span>
+    </a>
+
+    <ng-container *ngIf="user$ | async as user; else signedOut">
+      <h1 class="auth-title">&#64;{{ user.preferredUsername || user.username }}</h1>
+      <p class="auth-subtitle">{{ user.email }}</p>
+
+      <div class="profile-card">
+        <p class="profile-blurb">
+          Your Xomware profile lives here. Avatar, username editing, and linked
+          apps land in Phase 3.
+        </p>
+      </div>
+
+      <button type="button" class="auth-btn-ghost" (click)="signOut()">
+        Sign out
+      </button>
+    </ng-container>
+
+    <ng-template #signedOut>
+      <h1 class="auth-title">You're signed out</h1>
+      <p class="auth-subtitle">Sign in to view your profile.</p>
+      <a routerLink="/auth/sign-in" class="auth-btn" style="text-decoration: none;">
+        Sign in
+      </a>
+    </ng-template>
+
+    <a routerLink="/" class="auth-back">&larr; Back to xomware.com</a>
+  </div>
+</div>

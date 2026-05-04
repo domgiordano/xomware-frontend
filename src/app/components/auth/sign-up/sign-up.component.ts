@@ -1,0 +1,99 @@
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CognitoService } from '../../../services/cognito.service';
+import { AnalyticsService } from '../../../services/analytics.service';
+
+const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
+const RESERVED_USERNAMES = new Set([
+  'admin',
+  'system',
+  'xomappetit',
+  'chef',
+  'diner',
+  'xomware',
+  'support',
+]);
+
+function preferredUsernameValidator(control: AbstractControl): ValidationErrors | null {
+  const value = (control.value as string | null)?.trim() ?? '';
+  if (!value) return { required: true };
+  if (!USERNAME_REGEX.test(value)) return { pattern: true };
+  if (RESERVED_USERNAMES.has(value.toLowerCase())) return { reserved: true };
+  return null;
+}
+
+@Component({
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.scss'],
+})
+export class SignUpComponent {
+  readonly form: FormGroup;
+  loading = false;
+  errorMessage = '';
+
+  constructor(
+    private fb: FormBuilder,
+    private cognito: CognitoService,
+    private analytics: AnalyticsService,
+    private router: Router,
+  ) {
+    this.form = this.fb.group({
+      preferredUsername: ['', [preferredUsernameValidator]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
+
+  fieldInvalid(name: 'preferredUsername' | 'email' | 'password'): boolean {
+    const ctrl = this.form.get(name);
+    return !!ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched);
+  }
+
+  usernameError(): string | null {
+    const ctrl = this.form.get('preferredUsername');
+    if (!ctrl || !this.fieldInvalid('preferredUsername')) return null;
+    if (ctrl.hasError('required')) return 'Choose a username.';
+    if (ctrl.hasError('pattern'))
+      return '3–20 lowercase letters, numbers, or underscores.';
+    if (ctrl.hasError('reserved')) return 'That username is reserved. Try another.';
+    return 'Invalid username.';
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid || this.loading) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.loading = true;
+    this.errorMessage = '';
+    const { email, password, preferredUsername } = this.form.value as {
+      email: string;
+      password: string;
+      preferredUsername: string;
+    };
+
+    this.cognito.signUp(email, password, preferredUsername).subscribe({
+      next: () => {
+        this.analytics.track('sign_up', { method: 'cognito' });
+        this.router.navigate(['/auth/verify'], { queryParams: { email } });
+      },
+      error: (err: Error) => {
+        this.loading = false;
+        this.errorMessage = this.friendlyError(err);
+      },
+    });
+  }
+
+  private friendlyError(err: Error): string {
+    const msg = err.message || '';
+    if (/UsernameExistsException/i.test(msg))
+      return 'An account already exists for that email.';
+    if (/InvalidPasswordException/i.test(msg))
+      return 'Password does not meet the requirements.';
+    if (/InvalidParameterException/i.test(msg))
+      return 'One of the fields is invalid. Please check and try again.';
+    return 'Something went wrong. Please try again.';
+  }
+}

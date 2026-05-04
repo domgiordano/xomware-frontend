@@ -1,6 +1,9 @@
-import { Component, OnDestroy, AfterViewInit, HostListener, ElementRef } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit, HostListener, ElementRef, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { CognitoService, XomUser } from '../../services/cognito.service';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,12 +29,39 @@ interface ReportTarget {
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
 })
-export class LandingComponent implements AfterViewInit, OnDestroy {
+export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
   isScrolled = false;
   menuOpen = false;
   reportMenuOpen = false;
+  userMenuOpen = false;
+  user: XomUser | null = null;
+  private userSub?: Subscription;
 
-  constructor(private host: ElementRef<HTMLElement>) {}
+  constructor(
+    private host: ElementRef<HTMLElement>,
+    private cognito: CognitoService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.userSub = this.cognito.user$.subscribe((u) => (this.user = u));
+  }
+
+  toggleUserMenu(event: Event): void {
+    event.stopPropagation();
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  closeUserMenu(): void {
+    this.userMenuOpen = false;
+  }
+
+  signOut(): void {
+    this.cognito.signOut().subscribe(() => {
+      this.userMenuOpen = false;
+      this.router.navigateByUrl('/');
+    });
+  }
 
   reportTargets: ReportTarget[] = [
     { label: 'Xomify (Web)', repo: 'Xomware/xomify-frontend' },
@@ -166,17 +196,25 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.reportMenuOpen) return;
     const target = event.target as Node | null;
-    const wrapper = this.host.nativeElement.querySelector('.report-menu-wrapper');
-    if (wrapper && target && !wrapper.contains(target)) {
-      this.reportMenuOpen = false;
+    if (this.reportMenuOpen) {
+      const wrapper = this.host.nativeElement.querySelector('.report-menu-wrapper');
+      if (wrapper && target && !wrapper.contains(target)) {
+        this.reportMenuOpen = false;
+      }
+    }
+    if (this.userMenuOpen) {
+      const userWrapper = this.host.nativeElement.querySelector('.user-menu-wrapper');
+      if (userWrapper && target && !userWrapper.contains(target)) {
+        this.userMenuOpen = false;
+      }
     }
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.reportMenuOpen = false;
+    this.userMenuOpen = false;
   }
 
   toggleMenu(): void {
@@ -204,6 +242,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     ScrollTrigger.getAll().forEach(t => t.kill());
+    this.userSub?.unsubscribe();
   }
 
   private initScrollAnimations(): void {
