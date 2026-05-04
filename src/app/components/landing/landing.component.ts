@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CognitoService, XomUser } from '../../services/cognito.service';
+import { ProfileService } from '../../services/profile.service';
+import { UserProfile } from '../../models/user.model';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,16 +37,43 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
   reportMenuOpen = false;
   userMenuOpen = false;
   user: XomUser | null = null;
+  profile: UserProfile | null = null;
   private userSub?: Subscription;
+  private profileSub?: Subscription;
 
   constructor(
     private host: ElementRef<HTMLElement>,
     private cognito: CognitoService,
+    private profileService: ProfileService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.userSub = this.cognito.user$.subscribe((u) => (this.user = u));
+    this.profileSub = this.profileService.profile$.subscribe(
+      (p) => (this.profile = p),
+    );
+  }
+
+  /** First letter of the displayName/handle for the coral fallback bubble. */
+  get userInitial(): string {
+    const source =
+      this.profile?.displayName ??
+      this.profile?.preferredUsername ??
+      this.user?.preferredUsername ??
+      this.user?.username ??
+      '?';
+    return source.trim().charAt(0).toUpperCase() || '?';
+  }
+
+  /** Display name + handle for the user menu trigger label. */
+  get userHandle(): string {
+    return (
+      this.profile?.preferredUsername ??
+      this.user?.preferredUsername ??
+      this.user?.username ??
+      ''
+    );
   }
 
   toggleUserMenu(event: Event): void {
@@ -243,6 +272,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnDestroy(): void {
     ScrollTrigger.getAll().forEach(t => t.kill());
     this.userSub?.unsubscribe();
+    this.profileSub?.unsubscribe();
   }
 
   private initScrollAnimations(): void {

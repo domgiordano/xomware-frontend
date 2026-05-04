@@ -40,6 +40,8 @@ jobs:
             echo "COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /xomware/shared/cognito/clients/xomware-com-id --query Parameter.Value --output text)"
             echo "COGNITO_DOMAIN=$(aws ssm get-parameter --name /xomware/shared/cognito/hosted-ui-domain --query Parameter.Value --output text)"
             echo "FILE_EDITOR_API_URL=$(aws ssm get-parameter --name /xomware/shared/file-editor-api/url --query Parameter.Value --output text)"
+            echo "USERS_API_URL=$(aws ssm get-parameter --name /xomware/shared/users-api/url --query Parameter.Value --output text)"
+            echo "AVATARS_CDN_URL=$(aws ssm get-parameter --name /xomware/shared/avatars/cdn-url --query Parameter.Value --output text)"
           } >> "$GITHUB_ENV"
 
       - name: Inject environment variables into Angular
@@ -53,13 +55,17 @@ jobs:
           sed -i "s|cognitoClientId: ''|cognitoClientId: '${COGNITO_CLIENT_ID}'|g" src/environments/environment.ts
           sed -i "s|cognitoDomain: 'xomware-auth.auth.us-east-1.amazoncognito.com'|cognitoDomain: '${COGNITO_DOMAIN}'|g" src/environments/environment.ts
           sed -i "s|ga4MeasurementId: ''|ga4MeasurementId: '${GA4_MEASUREMENT_ID}'|g" src/environments/environment.ts
-          # File-editor API URL comes from /xomware/shared/file-editor-api/url
-          # (Command Center backend, migrated from api.xomware.com to
-          # editor-api.xomware.com). Default in environment.ts is the new
-          # domain so the build still works if SSM is empty during a
-          # transitional deploy.
+          # File-editor + users-api + avatars CDN URLs come from SSM (set above).
+          # Defaults in environment.ts already point at the prod hosts so a build
+          # works if SSM is empty during a transitional deploy.
           if [ -n "${FILE_EDITOR_API_URL}" ]; then
             sed -i "s|apiBaseUrl: 'https://editor-api.xomware.com'|apiBaseUrl: '${FILE_EDITOR_API_URL}'|g" src/environments/environment.ts
+          fi
+          if [ -n "${USERS_API_URL}" ]; then
+            sed -i "s|usersApiUrl: 'https://api.xomware.com'|usersApiUrl: '${USERS_API_URL}'|g" src/environments/environment.ts
+          fi
+          if [ -n "${AVATARS_CDN_URL}" ]; then
+            sed -i "s|avatarsCdnUrl: ''|avatarsCdnUrl: '${AVATARS_CDN_URL}'|g" src/environments/environment.ts
           fi
 
       - name: Build

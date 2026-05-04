@@ -61,8 +61,19 @@
             (click)="toggleUserMenu($event)"
             [attr.aria-expanded]="userMenuOpen"
             aria-haspopup="menu"
+            [attr.aria-label]="'Account menu for @' + userHandle"
           >
-            <span class="user-menu-handle">&#64;{{ user.preferredUsername || user.username }}</span>
+            <span class="user-menu-avatar" [class.has-image]="profile?.avatarUrl">
+              <img
+                *ngIf="profile?.avatarUrl as src"
+                [src]="src"
+                [alt]="''"
+              />
+              <span *ngIf="!profile?.avatarUrl" class="user-menu-avatar-initial" aria-hidden="true">
+                {{ userInitial }}
+              </span>
+            </span>
+            <span class="user-menu-handle">&#64;{{ userHandle }}</span>
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="report-menu-caret" [class.open]="userMenuOpen" aria-hidden="true">
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" fill="currentColor"/>
             </svg>

@@ -1,17 +1,335 @@
 @import '../_shared/auth-shell';
 
-.profile-card {
-  margin-top: $spacing-lg;
+// ── Wider card for the profile (vs. the narrow auth forms) ──────────────────
+.profile-card-wide {
+  max-width: 560px;
+}
+
+// ── Hero (avatar + handle + name + email + visibility badge) ────────────────
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-xs;
   margin-bottom: $spacing-xl;
-  padding: $spacing-md $spacing-lg;
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $meals-coral, color-mix(in srgb, $meals-coral 70%, $brand-cyan-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid $glass-border;
+  box-shadow: $shadow-glow-cyan;
+  margin-bottom: $spacing-md;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &.has-image {
+    background: $bg-card;
+  }
+}
+
+.profile-avatar-initial {
+  font-size: 3rem;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.profile-handle {
+  font-size: 1.5rem;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  margin: 0;
+}
+
+.profile-display-name {
+  font-size: 1rem;
+  color: $text-secondary;
+  margin: 0;
+}
+
+.profile-email {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin: $spacing-xs 0 0;
+  word-break: break-all;
+}
+
+.profile-visibility-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: $spacing-sm;
+  padding: 4px 12px;
+  background: $brand-cyan-subtle;
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  border-radius: $radius-pill;
+  color: $brand-cyan-light;
+  font-size: 0.75rem;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &.private {
+    background: rgba(255, 107, 107, 0.08);
+    border-color: rgba(255, 107, 107, 0.25);
+    color: lighten($meals-coral, 10%);
+  }
+
+  .badge-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ── Stats grid (placeholders for v1) ────────────────────────────────────────
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-xl;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid $glass-border;
   border-radius: $radius-md;
+
+  @media (max-width: $breakpoint-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.profile-blurb {
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: $text-muted;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+// ── Action row ──────────────────────────────────────────────────────────────
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  .auth-btn,
+  .auth-btn-ghost {
+    width: 100%;
+  }
+}
+
+// ── Edit profile modal ──────────────────────────────────────────────────────
+.edit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  z-index: 1000;
+  animation: authFadeIn 0.2s ease-out;
+}
+
+.edit-modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - #{$spacing-xl});
+  overflow-y: auto;
+  padding: $spacing-xl;
+  background: $card-gradient;
+  border: 1px solid $glass-border;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg, $shadow-glow-cyan;
+}
+
+.edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+}
+
+.edit-modal-title {
+  font-size: 1.25rem;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
   margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
+}
+
+.edit-modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-sm;
   color: $text-secondary;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    color: $text-primary;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+}
+
+.edit-modal-form {
+  gap: $spacing-lg;
+}
+
+.edit-modal-actions {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+
+  .auth-btn,
+  .auth-btn-ghost {
+    flex: 1;
+  }
+}
+
+// ── Avatar upload row inside the modal ──────────────────────────────────────
+.avatar-upload-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.profile-avatar-medium {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $meals-coral, color-mix(in srgb, $meals-coral 70%, $brand-cyan-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid $glass-border;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .profile-avatar-initial {
+    font-size: 1.75rem;
+  }
+
+  &.has-image {
+    background: $bg-card;
+  }
+}
+
+.avatar-upload-button {
+  flex: 1;
+  cursor: pointer;
+  margin: 0;
+
+  &:has(input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Visibility radios ───────────────────────────────────────────────────────
+.visibility-field {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.visibility-option {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  & + & {
+    margin-top: $spacing-xs;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  &:has(input:checked) {
+    background: $brand-cyan-subtle;
+    border-color: rgba(0, 180, 216, 0.4);
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+
+  input[type='radio'] {
+    margin-top: 2px;
+    accent-color: $brand-cyan;
+    cursor: pointer;
+  }
+}
+
+.visibility-option-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: $text-primary;
+  font-size: 0.9rem;
+
+  strong {
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.visibility-option-hint {
+  color: $text-secondary;
+  font-size: 0.8rem;
 }
