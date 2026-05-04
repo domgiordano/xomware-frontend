@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.xomware.com',
+  apiBaseUrl: 'https://editor-api.xomware.com',
   awsRegion: 'us-east-1',
   cognitoUserPoolId: '',
   cognitoClientId: '',
