@@ -13,15 +13,20 @@ import { ForgotPasswordComponent } from './components/auth/forgot-password/forgo
 import { CallbackComponent } from './components/auth/callback/callback.component';
 import { ProfileComponent } from './components/auth/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent, canActivate: [cognitoAuthGuard] },
+  // Landing is intentionally public so Google OAuth verification can confirm
+  // the home page renders without login. The landing component already
+  // tolerates `user: null` (no menu, just the public marketing view).
+  { path: '', component: LandingComponent },
+  { path: 'privacy', component: PrivacyComponent },
   { path: 'auth/sign-in', component: SignInComponent },
   { path: 'auth/sign-up', component: SignUpComponent },
   { path: 'auth/verify', component: VerifyComponent },
   { path: 'auth/forgot-password', component: ForgotPasswordComponent },
   { path: 'auth/callback', component: CallbackComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [cognitoAuthGuard] },
   { path: 'command/login', component: AuthGateComponent },
   { path: 'command', component: CommandCenterComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },

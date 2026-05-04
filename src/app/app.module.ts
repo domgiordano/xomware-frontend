@@ -19,6 +19,7 @@ import { ForgotPasswordComponent } from './components/auth/forgot-password/forgo
 import { CallbackComponent } from './components/auth/callback/callback.component';
 import { ProfileComponent } from './components/auth/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { AdminComponent } from './components/admin/admin.component';
     CallbackComponent,
     ProfileComponent,
     AdminComponent,
+    PrivacyComponent,
   ],
   imports: [
     BrowserModule,
