@@ -74,9 +74,19 @@ export class SignInComponent implements OnInit {
   }
 
   onGoogleSignIn(): void {
-    // Phase 4 stub — UI present, click is a no-op so the layout is final but
-    // we don't kick off OAuth until Google is registered as a federated IdP.
-    this.errorMessage = 'Google sign-in is coming soon.';
+    // Phase 4: kick off the Google OAuth redirect through Cognito Hosted UI.
+    // The PreSignUp Lambda links to an existing local account if one exists.
+    if (this.loading) return;
+    this.loading = true;
+    this.errorMessage = '';
+    this.analytics.track('login_initiate', { method: 'google' });
+    this.cognito.signInWithGoogle().subscribe({
+      // No `next` handler needed — Amplify navigates the page to Google.
+      error: (err: Error) => {
+        this.loading = false;
+        this.errorMessage = this.friendlyError(err);
+      },
+    });
   }
 
   private friendlyError(err: Error): string {
