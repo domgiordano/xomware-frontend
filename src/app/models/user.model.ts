@@ -38,6 +38,7 @@ export interface MinimalUser {
 
 /** Whitelist of fields the user can self-edit via `POST /users/edit`. */
 export interface EditableFields {
+  preferredUsername: string;
   displayName: string;
   profileVisibility: ProfileVisibility;
   avatarUrl: string | null;

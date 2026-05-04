@@ -19,6 +19,8 @@ export interface XomUser {
   username: string;
   preferredUsername?: string;
   email?: string;
+  /** Cognito groups (e.g. `['admin']`). Empty for unprivileged users. */
+  groups: string[];
 }
 
 /**
@@ -188,12 +190,21 @@ export class CognitoService implements OnDestroy {
       const current = await getCurrentUser();
       const session = await fetchAuthSession();
       const claims = session.tokens?.idToken?.payload ?? {};
+      // Don't fall back to `current.username` for preferredUsername — for
+      // federated users that's the ugly Google_<id> form, and templates
+      // that prefix `@` on this value end up rendering `@Google_...`.
+      // Leave undefined when the user hasn't picked a real handle yet.
+      const preferredUsername =
+        typeof claims['preferred_username'] === 'string'
+          ? (claims['preferred_username'] as string)
+          : undefined;
+      const groups = (claims['cognito:groups'] as string[] | undefined) ?? [];
       const user: XomUser = {
         userId: current.userId,
         username: current.username,
-        preferredUsername:
-          (claims['preferred_username'] as string | undefined) ?? current.username,
+        preferredUsername,
         email: claims['email'] as string | undefined,
+        groups,
       };
       this.userSubject.next(user);
       return user;
