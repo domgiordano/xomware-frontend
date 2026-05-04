@@ -101,19 +101,17 @@ export class CognitoService implements OnDestroy {
     email: string,
     password: string,
     preferredUsername: string,
-  ): Observable<{ userConfirmed: boolean }> {
-    // The shared pool uses alias_attributes = ["email", "preferred_username"]
-    // (Option B), which means the underlying Cognito Username CANNOT be in
-    // email format. Generate an opaque UUID — sign-in still works with email
-    // because email is an alias.
+  ): Observable<{ userConfirmed: boolean; username: string }> {
+    // Pool config: alias_attributes = ["email"]. Cognito Username must be
+    // opaque (NOT email-format). Generate a UUID. Caller stores it and
+    // passes it back to confirmSignUp — alias resolution can't be used
+    // for unconfirmed users, since email-uniqueness is only enforced
+    // post-confirmation (a retry would otherwise create a parallel
+    // unconfirmed user with the same email and break verify).
     const opaqueUsername =
       typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    // preferred_username can't be a userAttribute during SignUp because
-    // alias_attributes includes it (Cognito reserves alias attrs for
-    // confirmed accounts only). Pass via clientMetadata; the PostConfirmation
-    // Lambda picks it up after the email is verified.
     return from(
       signUp({
         username: opaqueUsername,
@@ -122,11 +120,17 @@ export class CognitoService implements OnDestroy {
           userAttributes: {
             email,
           },
+          // preferred_username can't be a SignUp userAttribute (alias
+          // reserved for confirmed accounts). Forward via clientMetadata;
+          // the PostConfirmation Lambda picks it up.
           clientMetadata: {
             preferred_username: preferredUsername,
           },
         },
-      }).then((res) => ({ userConfirmed: !!res.isSignUpComplete })),
+      }).then((res) => ({
+        userConfirmed: !!res.isSignUpComplete,
+        username: opaqueUsername,
+      })),
     );
   }
 

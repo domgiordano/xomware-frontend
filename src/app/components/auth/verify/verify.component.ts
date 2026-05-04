@@ -16,6 +16,9 @@ export class VerifyComponent implements OnInit {
   errorMessage = '';
   infoMessage = '';
   email = '';
+  /** Opaque Cognito Username from sign-up. confirmSignUp uses this directly
+   * — alias resolution by email isn't reliable for unconfirmed users. */
+  private username = '';
   /** Forwarded to sign-in after verify so the auth-gate `next` survives sign-up→verify→sign-in. */
   private nextPath: string | null = null;
 
@@ -33,6 +36,7 @@ export class VerifyComponent implements OnInit {
 
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
+    this.username = this.route.snapshot.queryParamMap.get('username') ?? '';
     const raw = this.route.snapshot.queryParamMap.get('next');
     if (raw && raw.startsWith('/') && !raw.startsWith('//')) {
       this.nextPath = raw;
@@ -45,8 +49,8 @@ export class VerifyComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.email) {
-      this.errorMessage = 'Missing email — go back and start sign-up again.';
+    if (!this.username && !this.email) {
+      this.errorMessage = 'Missing identifier — go back and start sign-up again.';
       return;
     }
     if (this.form.invalid || this.loading) {
@@ -57,8 +61,13 @@ export class VerifyComponent implements OnInit {
     this.errorMessage = '';
     this.infoMessage = '';
     const { code } = this.form.value as { code: string };
+    // Prefer the UUID Username (set by sign-up). Fall back to email only
+    // if the user landed here by direct URL — works for confirmed users
+    // resending codes, but unreliable when multiple unconfirmed accounts
+    // share an email.
+    const identifier = this.username || this.email;
 
-    this.cognito.confirmSignUp(this.email, code).subscribe({
+    this.cognito.confirmSignUp(identifier, code).subscribe({
       next: (confirmed) => {
         this.loading = false;
         if (confirmed) {
@@ -78,12 +87,13 @@ export class VerifyComponent implements OnInit {
   }
 
   onResend(): void {
-    if (!this.email || this.resending) return;
+    if ((!this.username && !this.email) || this.resending) return;
     this.resending = true;
     this.errorMessage = '';
     this.infoMessage = '';
+    const identifier = this.username || this.email;
 
-    this.cognito.resendCode(this.email).subscribe({
+    this.cognito.resendCode(identifier).subscribe({
       next: () => {
         this.resending = false;
         this.infoMessage = 'A new code is on its way.';
