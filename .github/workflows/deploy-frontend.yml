@@ -29,21 +29,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Pull Cognito config from SSM (Terraform-managed values)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+        run: |
+          {
+            echo "COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name /xomware/shared/cognito/user-pool-id --query Parameter.Value --output text)"
+            echo "COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /xomware/shared/cognito/clients/xomware-com-id --query Parameter.Value --output text)"
+            echo "COGNITO_DOMAIN=$(aws ssm get-parameter --name /xomware/shared/cognito/hosted-ui-domain --query Parameter.Value --output text)"
+          } >> "$GITHUB_ENV"
+
       - name: Inject environment variables into Angular
         env:
-          COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
-          COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-          COGNITO_DOMAIN: ${{ secrets.COGNITO_DOMAIN }}
           GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
         run: |
-          # Replace the empty-string placeholders in environment.ts with the
-          # values from repo secrets. Empty secrets stay empty (Amplify config
-          # is conditionally enabled in main.ts when both pool + client are set).
+          # Cognito values come from SSM (set via $GITHUB_ENV in the prior step).
+          # GA4 is optional and stays as a repo secret since the user creates the
+          # GA4 property out-of-band — when blank the analytics service no-ops.
           sed -i "s|cognitoUserPoolId: ''|cognitoUserPoolId: '${COGNITO_USER_POOL_ID}'|g" src/environments/environment.ts
           sed -i "s|cognitoClientId: ''|cognitoClientId: '${COGNITO_CLIENT_ID}'|g" src/environments/environment.ts
-          if [ -n "${COGNITO_DOMAIN}" ]; then
-            sed -i "s|cognitoDomain: 'xomware-auth.auth.us-east-1.amazoncognito.com'|cognitoDomain: '${COGNITO_DOMAIN}'|g" src/environments/environment.ts
-          fi
+          sed -i "s|cognitoDomain: 'xomware-auth.auth.us-east-1.amazoncognito.com'|cognitoDomain: '${COGNITO_DOMAIN}'|g" src/environments/environment.ts
           sed -i "s|ga4MeasurementId: ''|ga4MeasurementId: '${GA4_MEASUREMENT_ID}'|g" src/environments/environment.ts
 
       - name: Build
