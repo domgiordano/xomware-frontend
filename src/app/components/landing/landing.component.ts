@@ -61,19 +61,26 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
       this.profile?.displayName ??
       this.profile?.preferredUsername ??
       this.user?.preferredUsername ??
+      this.profile?.email ??
       this.user?.username ??
       '?';
     return source.trim().charAt(0).toUpperCase() || '?';
   }
 
-  /** Display name + handle for the user menu trigger label. */
-  get userHandle(): string {
-    return (
-      this.profile?.preferredUsername ??
-      this.user?.preferredUsername ??
-      this.user?.username ??
-      ''
-    );
+  /**
+   * Label for the user menu trigger.
+   *
+   * Prefers `@handle` when a real preferredUsername is set, then displayName
+   * (no @), then the email-local-part. Falls back to the raw Cognito
+   * username only as a last resort — for federated users that's the ugly
+   * `Google_102793155679...` form which no one wants on screen.
+   */
+  get userLabel(): string {
+    const handle = this.profile?.preferredUsername || this.user?.preferredUsername;
+    if (handle) return `@${handle}`;
+    if (this.profile?.displayName) return this.profile.displayName;
+    if (this.profile?.email) return this.profile.email.split('@')[0];
+    return this.user?.username ?? '';
   }
 
   toggleUserMenu(event: Event): void {
