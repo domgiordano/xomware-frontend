@@ -171,7 +171,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
       color: '#ff6b6b',
       colorRgb: '255, 107, 107',
       url: 'https://xomappetit.xomware.com',
-      logo: 'assets/img/xomappetit-icon.png',
+      logo: 'assets/img/xomappetit-banner.png',
       tag: 'Web App',
       status: 'live',
       platform: 'web',
