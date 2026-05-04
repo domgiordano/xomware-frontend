@@ -4,6 +4,7 @@ import { LandingComponent } from './components/landing/landing.component';
 import { CommandCenterComponent } from './components/command-center/command-center.component';
 import { AuthGateComponent } from './components/command-center/auth-gate/auth-gate.component';
 import { AuthGuard } from './guards/auth.guard';
+import { cognitoAuthGuard } from './guards/cognito-auth.guard';
 import { SignInComponent } from './components/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
 import { VerifyComponent } from './components/auth/verify/verify.component';
@@ -12,7 +13,7 @@ import { CallbackComponent } from './components/auth/callback/callback.component
 import { ProfileComponent } from './components/auth/profile/profile.component';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
+  { path: '', component: LandingComponent, canActivate: [cognitoAuthGuard] },
   { path: 'auth/sign-in', component: SignInComponent },
   { path: 'auth/sign-up', component: SignUpComponent },
   { path: 'auth/verify', component: VerifyComponent },

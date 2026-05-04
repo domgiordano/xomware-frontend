@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CognitoService } from '../../../services/cognito.service';
@@ -9,10 +9,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit {
   readonly form: FormGroup;
   loading = false;
   errorMessage = '';
+  /** Path to bounce to after a successful sign-in. Set from `?next=` on init. */
+  private nextPath = '/';
 
   constructor(
     private fb: FormBuilder,
@@ -25,6 +27,17 @@ export class SignInComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
+  }
+
+  ngOnInit(): void {
+    const raw = this.route.snapshot.queryParamMap.get('next');
+    if (raw) {
+      const decoded = decodeURIComponent(raw);
+      // Only honor app-internal paths to avoid open-redirect via `?next=https://evil.com`.
+      if (decoded.startsWith('/') && !decoded.startsWith('//')) {
+        this.nextPath = decoded;
+      }
+    }
   }
 
   fieldInvalid(name: 'email' | 'password'): boolean {
@@ -44,13 +57,15 @@ export class SignInComponent {
     this.cognito.signIn(email, password).subscribe({
       next: () => {
         this.analytics.track('login', { method: 'cognito' });
-        const redirect = this.route.snapshot.queryParamMap.get('redirect') ?? '/';
-        this.router.navigateByUrl(redirect);
+        this.router.navigateByUrl(this.nextPath);
       },
       error: (err: Error) => {
         this.loading = false;
         if (err.message === 'CONFIRM_SIGN_UP') {
-          this.router.navigate(['/auth/verify'], { queryParams: { email } });
+          // Forward `next` so post-verify-and-sign-in lands on the original target.
+          this.router.navigate(['/auth/verify'], {
+            queryParams: { email, next: this.nextPath },
+          });
           return;
         }
         this.errorMessage = this.friendlyError(err);

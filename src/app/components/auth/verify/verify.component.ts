@@ -16,6 +16,8 @@ export class VerifyComponent implements OnInit {
   errorMessage = '';
   infoMessage = '';
   email = '';
+  /** Forwarded to sign-in after verify so the auth-gate `next` survives sign-up→verify→sign-in. */
+  private nextPath: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +33,10 @@ export class VerifyComponent implements OnInit {
 
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
+    const raw = this.route.snapshot.queryParamMap.get('next');
+    if (raw && raw.startsWith('/') && !raw.startsWith('//')) {
+      this.nextPath = raw;
+    }
   }
 
   fieldInvalid(name: 'code'): boolean {
@@ -57,7 +63,9 @@ export class VerifyComponent implements OnInit {
         this.loading = false;
         if (confirmed) {
           this.analytics.track('verify_email');
-          this.router.navigate(['/auth/sign-in'], { queryParams: { email: this.email } });
+          const queryParams: Record<string, string> = { email: this.email };
+          if (this.nextPath) queryParams['next'] = this.nextPath;
+          this.router.navigate(['/auth/sign-in'], { queryParams });
         } else {
           this.errorMessage = 'Verification did not complete. Try the code again.';
         }

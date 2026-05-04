@@ -30,14 +30,21 @@ export interface XomUser {
 @Injectable({ providedIn: 'root' })
 export class CognitoService implements OnDestroy {
   private readonly userSubject = new BehaviorSubject<XomUser | null>(null);
+  private readonly readySubject = new BehaviorSubject<boolean>(false);
   private hubSub?: () => void;
 
   readonly user$: Observable<XomUser | null> = this.userSubject.asObservable();
   readonly isAuthenticated$: Observable<boolean> = this.user$.pipe(map((u) => !!u));
+  /**
+   * Emits `true` once the initial session check has settled (signed-in or not).
+   * Route guards subscribe to this so the gate doesn't fire on stale `null` state
+   * during the first paint and flash protected content before redirecting.
+   */
+  readonly isReady$: Observable<boolean> = this.readySubject.asObservable();
 
   constructor() {
     // Bootstrap current session on app start
-    this.refreshUser();
+    this.bootstrap();
 
     // React to Amplify auth events (sign-in, sign-out, OAuth redirect, token refresh)
     this.hubSub = Hub.listen('auth', ({ payload }) => {
@@ -60,6 +67,21 @@ export class CognitoService implements OnDestroy {
 
   get currentUser(): XomUser | null {
     return this.userSubject.value;
+  }
+
+  /** Synchronous check used by route guards after `isReady$` resolves. */
+  isAuthenticated(): boolean {
+    return this.userSubject.value !== null;
+  }
+
+  private async bootstrap(): Promise<void> {
+    try {
+      await this.refreshUser();
+    } catch {
+      // No session is fine — userSubject is already null.
+    } finally {
+      this.readySubject.next(true);
+    }
   }
 
   signIn(email: string, password: string): Observable<XomUser> {
