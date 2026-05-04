@@ -1,0 +1,74 @@
+<main class="privacy">
+  <header class="hero">
+    <a routerLink="/" class="back-link" aria-label="Back to xomware.com">&larr; Back</a>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: {{ lastUpdated }}</p>
+  </header>
+
+  <section class="body">
+    <h2>What this is</h2>
+    <p>
+      Xomware is a personal portfolio of small apps run by Dominick Giordano (handle <strong>&#64;domgiordano</strong>).
+      This page describes what data Xomware collects when you use any app under <code>xomware.com</code> or any
+      sub-app such as <code>xomappetit.xomware.com</code>.
+    </p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li><strong>Email address</strong> &mdash; required to create an account.</li>
+      <li><strong>Handle</strong> (e.g. <code>&#64;domgiordano</code>) &mdash; chosen by you at sign-up.</li>
+      <li>
+        <strong>Display name and profile picture</strong> &mdash; if you sign in with Google, we store the name
+        and avatar Google returns. You can change either at any time on the profile page.
+      </li>
+      <li>
+        <strong>Sign-in / sign-up timestamps</strong> &mdash; we keep a small audit log so the operator (Dominick)
+        can see usage. Rows expire automatically after 90 days.
+      </li>
+      <li>
+        <strong>App-specific content you create</strong> &mdash; e.g. recipes you save in Xom App&eacute;tit, files
+        you edit, or any other data you enter into a Xomware app.
+      </li>
+    </ul>
+
+    <h2>How we store it</h2>
+    <p>
+      Account data lives in <strong>AWS Cognito</strong> (identity provider) and <strong>AWS DynamoDB</strong>
+      (profile + app data), encrypted at rest with AWS KMS. Avatars live in S3 behind CloudFront. Everything is
+      hosted in <code>us-east-1</code>.
+    </p>
+
+    <h2>Who we share it with</h2>
+    <p>
+      <strong>Nobody.</strong> Xomware does not sell, rent, or share your data. The only third parties that
+      touch your data are AWS (the hosting provider) and, if you choose Google sign-in, Google (purely to
+      authenticate you &mdash; we receive your email + display name + avatar URL and nothing else).
+    </p>
+
+    <h2>Cookies and tracking</h2>
+    <p>
+      Xomware uses session tokens issued by Cognito to keep you signed in. There is no third-party advertising,
+      no cross-site tracking, and no analytics that send your data outside Xomware.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can delete your account at any time from the profile page, which removes your row from the
+      identity pool and your profile data from DynamoDB. App-specific content (recipes, etc.) is
+      removed as part of account deletion. To request a copy of your data or ask any other question, email
+      <a href="mailto:dominickj.giordano&#64;gmail.com">dominickj.giordano&#64;gmail.com</a>.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      If this policy changes, the &ldquo;Last updated&rdquo; date above will change with it. Material changes
+      will also be announced on the home page.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Dominick Giordano &mdash;
+      <a href="mailto:dominickj.giordano&#64;gmail.com">dominickj.giordano&#64;gmail.com</a>
+    </p>
+  </section>
+</main>
