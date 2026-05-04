@@ -110,6 +110,10 @@ export class CognitoService implements OnDestroy {
       typeof crypto !== 'undefined' && crypto.randomUUID
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    // preferred_username can't be a userAttribute during SignUp because
+    // alias_attributes includes it (Cognito reserves alias attrs for
+    // confirmed accounts only). Pass via clientMetadata; the PostConfirmation
+    // Lambda picks it up after the email is verified.
     return from(
       signUp({
         username: opaqueUsername,
@@ -117,6 +121,8 @@ export class CognitoService implements OnDestroy {
         options: {
           userAttributes: {
             email,
+          },
+          clientMetadata: {
             preferred_username: preferredUsername,
           },
         },
