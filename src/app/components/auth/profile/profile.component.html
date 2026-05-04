@@ -25,7 +25,10 @@
           >{{ avatarInitial(profile) }}</span>
         </div>
 
-        <h1 class="profile-handle">&#64;{{ profile.preferredUsername }}</h1>
+        <h1 *ngIf="profile.preferredUsername" class="profile-handle">&#64;{{ profile.preferredUsername }}</h1>
+        <p *ngIf="!profile.preferredUsername" class="profile-handle profile-handle-empty">
+          No handle yet — <button type="button" class="link-button" (click)="openEdit()">choose one</button>
+        </p>
         <p class="profile-display-name">{{ fallbackDisplayName(profile) }}</p>
         <p class="profile-email" *ngIf="profile.email">{{ profile.email }}</p>
 
@@ -52,26 +55,6 @@
           </svg>
           {{ profile.profileVisibility === 'public' ? 'Public profile' : 'Private profile' }}
         </span>
-      </div>
-
-      <!-- Stats placeholders (v1) -->
-      <div class="profile-stats" role="list">
-        <div class="profile-stat" role="listitem">
-          <span class="stat-value">0</span>
-          <span class="stat-label">Apps</span>
-        </div>
-        <div class="profile-stat" role="listitem">
-          <span class="stat-value">0</span>
-          <span class="stat-label">Followers</span>
-        </div>
-        <div class="profile-stat" role="listitem">
-          <span class="stat-value">0</span>
-          <span class="stat-label">Following</span>
-        </div>
-        <div class="profile-stat" role="listitem">
-          <span class="stat-value">0</span>
-          <span class="stat-label">Posts</span>
-        </div>
       </div>
 
       <!-- Actions -->
@@ -168,6 +151,42 @@
           </label>
         </div>
         <span class="auth-hint">PNG, JPG, or WebP. Saved when you press Save.</span>
+      </div>
+
+      <!-- Handle -->
+      <div class="auth-field">
+        <label for="edit-handle" class="auth-label">Handle</label>
+        <div class="handle-input-wrapper">
+          <span class="handle-input-prefix" aria-hidden="true">&#64;</span>
+          <input
+            id="edit-handle"
+            type="text"
+            formControlName="preferredUsername"
+            class="auth-input handle-input"
+            [class.invalid]="fieldInvalid('preferredUsername')"
+            maxlength="20"
+            placeholder="hungry_chef"
+            autocomplete="username"
+            spellcheck="false"
+            autocapitalize="off"
+            [attr.aria-invalid]="fieldInvalid('preferredUsername') || null"
+            [attr.aria-describedby]="fieldInvalid('preferredUsername') ? 'edit-handle-error' : 'edit-handle-help'"
+          />
+        </div>
+        <span
+          *ngIf="!fieldInvalid('preferredUsername')"
+          id="edit-handle-help"
+          class="auth-help"
+        >
+          3–20 lowercase letters, numbers, or underscores. Must be unique.
+        </span>
+        <span
+          *ngIf="fieldInvalid('preferredUsername')"
+          id="edit-handle-error"
+          class="auth-error-field"
+        >
+          {{ handleErrorMessage }}
+        </span>
       </div>
 
       <!-- Display name -->

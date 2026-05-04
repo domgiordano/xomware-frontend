@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { CognitoService } from '../../../services/cognito.service';
@@ -12,6 +12,21 @@ import {
 
 const ALLOWED_AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const MAX_DISPLAY_NAME = 50;
+const HANDLE_REGEX = /^[a-z0-9_]{3,20}$/;
+const RESERVED_HANDLES = new Set([
+  'admin', 'system', 'xomware', 'xomappetit', 'support',
+  'chef', 'diner', 'help', 'about', 'privacy', 'terms',
+  'api', 'auth', 'profile', 'login', 'signin', 'signup',
+  'me', 'you', 'user', 'users',
+]);
+
+function handleValidator(control: AbstractControl): ValidationErrors | null {
+  const value = (control.value as string | null)?.trim().toLowerCase() ?? '';
+  if (!value) return null; // optional — empty is allowed
+  if (!HANDLE_REGEX.test(value)) return { pattern: true };
+  if (RESERVED_HANDLES.has(value)) return { reserved: true };
+  return null;
+}
 
 @Component({
   selector: 'app-profile',
@@ -42,6 +57,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {
     this.profile$ = this.profileService.profile$;
     this.editForm = this.fb.group({
+      preferredUsername: ['', [handleValidator]],
       displayName: [
         '',
         [
@@ -52,6 +68,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
       ],
       profileVisibility: ['public' as ProfileVisibility, Validators.required],
     });
+  }
+
+  get handleErrorMessage(): string {
+    const ctrl = this.editForm.get('preferredUsername');
+    if (!ctrl) return '';
+    if (ctrl.hasError('pattern')) return '3–20 lowercase letters, numbers, or underscores.';
+    if (ctrl.hasError('reserved')) return 'That handle is reserved. Pick another.';
+    if (ctrl.hasError('taken')) return 'That handle is already taken.';
+    return 'Invalid handle.';
   }
 
   ngOnInit(): void {
@@ -91,6 +116,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.pendingAvatarUrl = null;
     this.editForm.reset({
+      preferredUsername: this.currentProfile.preferredUsername ?? '',
       displayName: this.currentProfile.displayName ?? '',
       profileVisibility: this.currentProfile.profileVisibility ?? 'public',
     });
@@ -104,7 +130,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
   }
 
-  fieldInvalid(name: 'displayName'): boolean {
+  fieldInvalid(name: 'displayName' | 'preferredUsername'): boolean {
     const ctrl = this.editForm.get(name);
     return !!ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched);
   }
@@ -144,7 +170,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.errorMessage = '';
 
-    const { displayName, profileVisibility } = this.editForm.value as {
+    const { preferredUsername, displayName, profileVisibility } = this.editForm.value as {
+      preferredUsername: string;
       displayName: string;
       profileVisibility: ProfileVisibility;
     };
@@ -153,6 +180,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       displayName: displayName.trim(),
       profileVisibility,
     };
+    const newHandle = (preferredUsername || '').trim().toLowerCase();
+    if (newHandle && newHandle !== this.currentProfile?.preferredUsername) {
+      payload['preferredUsername'] = newHandle;
+    }
     if (this.pendingAvatarUrl) {
       payload['avatarUrl'] = this.pendingAvatarUrl;
     }
@@ -164,9 +195,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.editOpen = false;
         this.pendingAvatarUrl = null;
       },
-      error: () => {
+      error: (err: { status?: number; error?: { error?: string } }) => {
         this.saving = false;
-        this.errorMessage = 'Could not save changes. Please try again.';
+        if (err?.status === 409 || err?.error?.error === 'handle_taken') {
+          // Surface uniqueness collision on the field itself.
+          this.editForm.get('preferredUsername')?.setErrors({ taken: true });
+          this.editForm.get('preferredUsername')?.markAsTouched();
+          this.errorMessage = '';
+        } else {
+          this.errorMessage = 'Could not save changes. Please try again.';
+        }
       },
     });
   }

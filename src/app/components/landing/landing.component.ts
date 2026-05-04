@@ -83,6 +83,11 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
     return this.user?.username ?? '';
   }
 
+  /** True when the signed-in user is in the Cognito `admin` group. */
+  get isAdmin(): boolean {
+    return (this.user?.groups ?? []).includes('admin');
+  }
+
   toggleUserMenu(event: Event): void {
     event.stopPropagation();
     this.userMenuOpen = !this.userMenuOpen;

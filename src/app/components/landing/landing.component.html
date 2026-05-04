@@ -101,6 +101,9 @@
             <a routerLink="/profile" role="menuitem" class="report-menu-item" (click)="closeUserMenu()">
               <span class="report-menu-label">Profile</span>
             </a>
+            <a *ngIf="isAdmin" routerLink="/admin" role="menuitem" class="report-menu-item" (click)="closeUserMenu()">
+              <span class="report-menu-label">Admin portal</span>
+            </a>
             <button type="button" role="menuitem" class="report-menu-item user-menu-signout" (click)="signOut()">
               <span class="report-menu-label">Sign out</span>
             </button>
