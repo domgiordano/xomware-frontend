@@ -80,13 +80,15 @@ export class SignInComponent implements OnInit {
   }
 
   private friendlyError(err: Error): string {
+    const name = (err as { name?: string }).name || '';
     const msg = err.message || '';
-    if (/NotAuthorizedException|Incorrect/i.test(msg))
+    const both = `${name} ${msg}`;
+    if (/NotAuthorizedException|Incorrect/i.test(both))
       return 'Email or password is incorrect.';
-    if (/UserNotFoundException/i.test(msg)) return 'No account found for that email.';
-    if (/UserNotConfirmedException/i.test(msg))
+    if (/UserNotFoundException/i.test(both)) return 'No account found for that email.';
+    if (/UserNotConfirmedException/i.test(both))
       return 'Please verify your email before signing in.';
-    if (/network/i.test(msg)) return 'Network error — check your connection and try again.';
-    return 'Something went wrong. Please try again.';
+    if (/network/i.test(both)) return 'Network error — check your connection and try again.';
+    return msg ? `${name ? name + ': ' : ''}${msg}` : 'Something went wrong. Please try again.';
   }
 }

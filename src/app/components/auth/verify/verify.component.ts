@@ -96,12 +96,23 @@ export class VerifyComponent implements OnInit {
   }
 
   private friendlyError(err: Error): string {
+    // Amplify v6 errors carry the Cognito exception name in `err.name`,
+    // not in `err.message`. Test both so we don't fall through to the
+    // generic catch-all silently.
+    const name = (err as { name?: string }).name || '';
     const msg = err.message || '';
-    if (/CodeMismatchException/i.test(msg)) return 'That code is incorrect.';
-    if (/ExpiredCodeException/i.test(msg))
-      return 'That code expired — request a new one.';
-    if (/LimitExceededException/i.test(msg))
+    const both = `${name} ${msg}`;
+    if (/CodeMismatchException/i.test(both)) return 'That code is incorrect.';
+    if (/ExpiredCodeException/i.test(both))
+      return 'That code expired or was wrong. Request a new one.';
+    if (/LimitExceededException/i.test(both))
       return 'Too many attempts. Please wait and try again.';
-    return 'Something went wrong. Please try again.';
+    if (/NotAuthorizedException/i.test(both)) {
+      if (/already confirmed/i.test(msg)) return 'Already confirmed — go sign in.';
+      return msg || 'Not authorized.';
+    }
+    if (/UserNotFoundException/i.test(both)) return 'No account for that email.';
+    // Fallback: surface the raw error so we can diagnose it.
+    return msg ? `${name ? name + ': ' : ''}${msg}` : 'Something went wrong. Please try again.';
   }
 }

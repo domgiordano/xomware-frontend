@@ -88,16 +88,18 @@ export class ForgotPasswordComponent {
   }
 
   private friendlyError(err: Error): string {
+    const name = (err as { name?: string }).name || '';
     const msg = err.message || '';
-    if (/UserNotFoundException/i.test(msg))
+    const both = `${name} ${msg}`;
+    if (/UserNotFoundException/i.test(both))
       return 'No account found for that email.';
-    if (/CodeMismatchException/i.test(msg)) return 'That code is incorrect.';
-    if (/ExpiredCodeException/i.test(msg))
+    if (/CodeMismatchException/i.test(both)) return 'That code is incorrect.';
+    if (/ExpiredCodeException/i.test(both))
       return 'That code expired — request a new one.';
-    if (/InvalidPasswordException/i.test(msg))
+    if (/InvalidPasswordException/i.test(both))
       return 'Password does not meet the requirements.';
-    if (/LimitExceededException/i.test(msg))
+    if (/LimitExceededException/i.test(both))
       return 'Too many attempts. Please wait and try again.';
-    return 'Something went wrong. Please try again.';
+    return msg ? `${name ? name + ': ' : ''}${msg}` : 'Something went wrong. Please try again.';
   }
 }
