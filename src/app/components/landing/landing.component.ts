@@ -170,10 +170,10 @@ export class LandingComponent implements AfterViewInit, OnDestroy, OnInit {
       description: 'Home-cooking tracker with recipes, ingredients & macros. Rated by three loud chefs.',
       color: '#ff6b6b',
       colorRgb: '255, 107, 107',
-      url: 'https://xomappétit.xomware.com',
-      logo: 'assets/img/xomappetit-placeholder.svg',
+      url: 'https://xomappetit.xomware.com',
+      logo: 'assets/img/xomappetit-icon.png',
       tag: 'Web App',
-      status: 'coming-soon',
+      status: 'live',
       platform: 'web',
     },
     {
