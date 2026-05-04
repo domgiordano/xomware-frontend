@@ -1,0 +1,17 @@
+@import '../_shared/auth-shell';
+
+.profile-card {
+  margin-top: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-md $spacing-lg;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid $glass-border;
+  border-radius: $radius-md;
+}
+
+.profile-blurb {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: $text-secondary;
+}

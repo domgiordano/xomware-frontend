@@ -1,0 +1,13 @@
+@import '../_shared/auth-shell';
+
+.callback-spinner {
+  display: flex;
+  justify-content: center;
+  margin-top: $spacing-lg;
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
+  }
+}

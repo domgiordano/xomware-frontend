@@ -49,6 +49,33 @@
             </a>
           </div>
         </div>
+
+        <!-- Sign in / user menu -->
+        <ng-container *ngIf="!user">
+          <a routerLink="/auth/sign-in" class="nav-link nav-link-signin">Sign in</a>
+        </ng-container>
+        <div class="user-menu-wrapper" *ngIf="user">
+          <button
+            type="button"
+            class="nav-link user-menu-trigger"
+            (click)="toggleUserMenu($event)"
+            [attr.aria-expanded]="userMenuOpen"
+            aria-haspopup="menu"
+          >
+            <span class="user-menu-handle">&#64;{{ user.preferredUsername || user.username }}</span>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="report-menu-caret" [class.open]="userMenuOpen" aria-hidden="true">
+              <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="report-menu user-menu" role="menu" *ngIf="userMenuOpen">
+            <a routerLink="/profile" role="menuitem" class="report-menu-item" (click)="closeUserMenu()">
+              <span class="report-menu-label">Profile</span>
+            </a>
+            <button type="button" role="menuitem" class="report-menu-item user-menu-signout" (click)="signOut()">
+              <span class="report-menu-label">Sign out</span>
+            </button>
+          </div>
+        </div>
       </div>
       <button class="nav-hamburger" (click)="toggleMenu()" [class.open]="menuOpen" aria-label="Toggle menu">
         <span class="hamburger-line"></span>
@@ -86,6 +113,22 @@
           {{ target.label }}
         </a>
       </div>
+
+      <ng-container *ngIf="!user">
+        <a routerLink="/auth/sign-in" class="mobile-menu-link" (click)="closeMenu()">Sign in</a>
+      </ng-container>
+      <ng-container *ngIf="user">
+        <a routerLink="/profile" class="mobile-menu-link" (click)="closeMenu()">
+          &#64;{{ user.preferredUsername || user.username }}
+        </a>
+        <button
+          type="button"
+          class="mobile-menu-link mobile-menu-signout"
+          (click)="signOut(); closeMenu()"
+        >
+          Sign out
+        </button>
+      </ng-container>
     </nav>
   </div>
 

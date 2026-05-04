@@ -1100,3 +1100,79 @@
     opacity: 1 !important;
   }
 }
+
+// ── Sign-in / User menu (auth) ───────────────────
+.nav-link-signin {
+  padding: 8px 16px;
+  border: 1px solid rgba($brand-cyan, 0.5);
+  border-radius: $radius-pill;
+  color: $brand-cyan;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba($brand-cyan, 0.1);
+    border-color: $brand-cyan;
+    color: $brand-cyan-light;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+}
+
+.user-menu-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.user-menu-trigger {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: $radius-pill;
+  cursor: pointer;
+  font: inherit;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: rgba($brand-cyan, 0.5);
+    color: $text-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+}
+
+.user-menu-handle {
+  font-size: 0.85rem;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+  margin-right: 4px;
+}
+
+.user-menu {
+  min-width: 180px;
+}
+
+.user-menu-signout {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.mobile-menu-signout {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}

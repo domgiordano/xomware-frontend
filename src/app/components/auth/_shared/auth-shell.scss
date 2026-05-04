@@ -1,0 +1,300 @@
+@import 'styles/variables';
+
+// Shared layout/style for all auth screens (sign-in, sign-up, verify, forgot, callback).
+// Mirrors the dark + glass aesthetic from .auth-gate but for full Cognito flows.
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-gradient;
+  padding: $spacing-xl $spacing-md;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $hero-gradient;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: $spacing-2xl;
+  background: $card-gradient;
+  border: 1px solid $glass-border;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg, $shadow-glow-cyan;
+  animation: authFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xl;
+
+  img {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 0 12px $brand-cyan-glow);
+  }
+
+  span {
+    font-size: 1.1rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.08em;
+    color: $text-primary;
+  }
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  margin: 0 0 $spacing-xs;
+  text-align: center;
+}
+
+.auth-subtitle {
+  font-size: 0.95rem;
+  color: $text-secondary;
+  margin: 0 0 $spacing-xl;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.auth-label {
+  font-size: 0.8rem;
+  font-weight: $font-weight-semibold;
+  color: $text-secondary;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: 1rem;
+  font-family: $font-stack;
+  outline: none;
+  transition: border-color $transition-base, box-shadow $transition-base;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  &:focus {
+    border-color: $brand-cyan;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.18);
+  }
+
+  &.invalid {
+    border-color: #ff5252;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.auth-hint {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.auth-error-field {
+  font-size: 0.8rem;
+  color: #ff7b7b;
+}
+
+.auth-error {
+  padding: $spacing-sm $spacing-md;
+  background: rgba(255, 82, 82, 0.08);
+  border: 1px solid rgba(255, 82, 82, 0.3);
+  border-radius: $radius-md;
+  color: #ff8a8a;
+  font-size: 0.85rem;
+}
+
+.auth-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: 14px;
+  background: linear-gradient(135deg, $brand-cyan-dark, $brand-cyan);
+  border: none;
+  border-radius: $radius-md;
+  color: white;
+  font-size: 1rem;
+  font-weight: $font-weight-semibold;
+  font-family: $font-stack;
+  cursor: pointer;
+  transition: transform $transition-base, box-shadow $transition-base, opacity $transition-base;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px $brand-cyan-glow;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.auth-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: 0.95rem;
+  font-weight: $font-weight-medium;
+  font-family: $font-stack;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $brand-cyan-light;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin: $spacing-md 0;
+  color: $text-muted;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.auth-footer {
+  margin-top: $spacing-xl;
+  text-align: center;
+  font-size: 0.9rem;
+  color: $text-secondary;
+
+  a {
+    color: $brand-cyan;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $brand-cyan-light;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $brand-cyan-light;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
+
+.auth-back {
+  display: inline-block;
+  margin-top: $spacing-lg;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.85rem;
+  text-decoration: none;
+  width: 100%;
+
+  &:hover {
+    color: $brand-cyan;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: authSpin 0.6s linear infinite;
+}
+
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
