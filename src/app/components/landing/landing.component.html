@@ -243,6 +243,25 @@
       <p class="section-subtitle">Products &amp; projects from the Xomware workshop.</p>
     </div>
 
+    <!-- Signed-out: lock the launcher behind auth, but keep the section
+         visible so anonymous visitors (and Google's OAuth verifier) still
+         see what Xomware is. -->
+    <div class="locked-launcher" *ngIf="!user">
+      <div class="locked-launcher-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h3 class="locked-launcher-title">Sign in to launch the suite</h3>
+      <p class="locked-launcher-copy">App access requires a Xomware account. Free, takes a minute.</p>
+      <div class="locked-launcher-actions">
+        <a routerLink="/auth/sign-in" class="locked-launcher-btn primary">Sign in</a>
+        <a routerLink="/auth/sign-up" class="locked-launcher-btn">Create account</a>
+      </div>
+    </div>
+
+    <!-- Signed-in: full launcher. -->
+    <ng-container *ngIf="user">
     <!-- Web Apps -->
     <h3 class="platform-heading">Web Apps</h3>
     <div class="cards-container">
@@ -315,6 +334,7 @@
         </a>
       </ng-container>
     </div>
+    </ng-container>
   </section>
 
   <!-- Footer -->
