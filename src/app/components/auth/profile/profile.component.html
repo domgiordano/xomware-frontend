@@ -1,34 +1,248 @@
 <div class="auth-shell">
-  <div class="auth-card">
+  <div class="auth-card profile-card-wide">
     <a routerLink="/" class="auth-brand" aria-label="Xomware home">
       <img src="assets/img/xomware-icon-transparent-background.png" alt="" />
       <span>XOMWARE</span>
     </a>
 
-    <ng-container *ngIf="user$ | async as user; else signedOut">
-      <h1 class="auth-title">&#64;{{ user.preferredUsername || user.username }}</h1>
-      <p class="auth-subtitle">{{ user.email }}</p>
+    <ng-container *ngIf="profile$ | async as profile; else loadingOrSignedOut">
+      <!-- Header: avatar + handle + name -->
+      <div class="profile-hero">
+        <div
+          class="profile-avatar-large"
+          [class.has-image]="profile.avatarUrl || pendingAvatarUrl"
+          [attr.aria-label]="'Avatar for ' + fallbackDisplayName(profile)"
+        >
+          <img
+            *ngIf="profile.avatarUrl || pendingAvatarUrl"
+            [src]="pendingAvatarUrl || profile.avatarUrl"
+            [alt]="fallbackDisplayName(profile) + ' avatar'"
+          />
+          <span
+            *ngIf="!profile.avatarUrl && !pendingAvatarUrl"
+            class="profile-avatar-initial"
+            aria-hidden="true"
+          >{{ avatarInitial(profile) }}</span>
+        </div>
 
-      <div class="profile-card">
-        <p class="profile-blurb">
-          Your Xomware profile lives here. Avatar, username editing, and linked
-          apps land in Phase 3.
-        </p>
+        <h1 class="profile-handle">&#64;{{ profile.preferredUsername }}</h1>
+        <p class="profile-display-name">{{ fallbackDisplayName(profile) }}</p>
+        <p class="profile-email" *ngIf="profile.email">{{ profile.email }}</p>
+
+        <span
+          class="profile-visibility-badge"
+          [class.private]="profile.profileVisibility === 'private'"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            class="badge-icon"
+            aria-hidden="true"
+          >
+            <path
+              *ngIf="profile.profileVisibility === 'public'"
+              d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"
+              fill="currentColor"
+            />
+            <path
+              *ngIf="profile.profileVisibility === 'private'"
+              d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"
+              fill="currentColor"
+            />
+          </svg>
+          {{ profile.profileVisibility === 'public' ? 'Public profile' : 'Private profile' }}
+        </span>
       </div>
 
-      <button type="button" class="auth-btn-ghost" (click)="signOut()">
-        Sign out
-      </button>
+      <!-- Stats placeholders (v1) -->
+      <div class="profile-stats" role="list">
+        <div class="profile-stat" role="listitem">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Apps</span>
+        </div>
+        <div class="profile-stat" role="listitem">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Followers</span>
+        </div>
+        <div class="profile-stat" role="listitem">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Following</span>
+        </div>
+        <div class="profile-stat" role="listitem">
+          <span class="stat-value">0</span>
+          <span class="stat-label">Posts</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="profile-actions">
+        <button type="button" class="auth-btn" (click)="openEdit()">
+          Edit profile
+        </button>
+        <button type="button" class="auth-btn-ghost" (click)="signOut()">
+          Sign out
+        </button>
+      </div>
     </ng-container>
 
-    <ng-template #signedOut>
-      <h1 class="auth-title">You're signed out</h1>
-      <p class="auth-subtitle">Sign in to view your profile.</p>
-      <a routerLink="/auth/sign-in" class="auth-btn" style="text-decoration: none;">
-        Sign in
-      </a>
+    <ng-template #loadingOrSignedOut>
+      <ng-container *ngIf="cognito.isAuthenticated(); else signedOut">
+        <h1 class="auth-title">Loading your profile…</h1>
+        <p class="auth-subtitle">One sec.</p>
+      </ng-container>
+      <ng-template #signedOut>
+        <h1 class="auth-title">You're signed out</h1>
+        <p class="auth-subtitle">Sign in to view your profile.</p>
+        <a
+          routerLink="/auth/sign-in"
+          class="auth-btn"
+          style="text-decoration: none;"
+        >Sign in</a>
+      </ng-template>
     </ng-template>
 
     <a routerLink="/" class="auth-back">&larr; Back to xomware.com</a>
+  </div>
+</div>
+
+<!-- Edit profile modal -->
+<div
+  class="edit-modal-backdrop"
+  *ngIf="editOpen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="edit-profile-title"
+  (click)="closeEdit()"
+>
+  <div class="edit-modal" (click)="$event.stopPropagation()">
+    <header class="edit-modal-header">
+      <h2 id="edit-profile-title" class="edit-modal-title">Edit profile</h2>
+      <button
+        type="button"
+        class="edit-modal-close"
+        aria-label="Close"
+        (click)="closeEdit()"
+      >&times;</button>
+    </header>
+
+    <form
+      [formGroup]="editForm"
+      (ngSubmit)="onSubmit()"
+      class="auth-form edit-modal-form"
+      novalidate
+    >
+      <!-- Avatar upload -->
+      <div class="auth-field">
+        <span class="auth-label">Avatar</span>
+        <div class="avatar-upload-row">
+          <ng-container *ngIf="profile$ | async as p">
+            <div
+              class="profile-avatar-medium"
+              [class.has-image]="pendingAvatarUrl || p.avatarUrl"
+            >
+              <img
+                *ngIf="pendingAvatarUrl || p.avatarUrl"
+                [src]="pendingAvatarUrl || p.avatarUrl"
+                alt=""
+              />
+              <span
+                *ngIf="!pendingAvatarUrl && !p.avatarUrl"
+                class="profile-avatar-initial"
+                aria-hidden="true"
+              >{{ avatarInitial(p) }}</span>
+            </div>
+          </ng-container>
+
+          <label class="auth-btn-ghost avatar-upload-button">
+            <span *ngIf="!uploadingAvatar">
+              {{ pendingAvatarUrl ? 'Choose a different image' : 'Upload new avatar' }}
+            </span>
+            <span *ngIf="uploadingAvatar" class="spinner" aria-label="Uploading"></span>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              (change)="onAvatarFileSelected($event)"
+              [disabled]="uploadingAvatar || saving"
+              hidden
+            />
+          </label>
+        </div>
+        <span class="auth-hint">PNG, JPG, or WebP. Saved when you press Save.</span>
+      </div>
+
+      <!-- Display name -->
+      <div class="auth-field">
+        <label for="edit-display-name" class="auth-label">Display name</label>
+        <input
+          id="edit-display-name"
+          type="text"
+          formControlName="displayName"
+          class="auth-input"
+          [class.invalid]="fieldInvalid('displayName')"
+          maxlength="50"
+          placeholder="Your full name"
+          autocomplete="name"
+          [attr.aria-invalid]="fieldInvalid('displayName') || null"
+          [attr.aria-describedby]="fieldInvalid('displayName') ? 'edit-display-name-error' : null"
+        />
+        <span
+          *ngIf="fieldInvalid('displayName')"
+          id="edit-display-name-error"
+          class="auth-error-field"
+        >
+          Display name must be 1–50 characters.
+        </span>
+      </div>
+
+      <!-- Visibility -->
+      <fieldset class="auth-field visibility-field">
+        <legend class="auth-label">Profile visibility</legend>
+        <label class="visibility-option">
+          <input
+            type="radio"
+            formControlName="profileVisibility"
+            value="public"
+          />
+          <span class="visibility-option-label">
+            <strong>Public</strong>
+            <span class="visibility-option-hint">
+              Anyone can find you by your &#64;handle.
+            </span>
+          </span>
+        </label>
+        <label class="visibility-option">
+          <input
+            type="radio"
+            formControlName="profileVisibility"
+            value="private"
+          />
+          <span class="visibility-option-label">
+            <strong>Private</strong>
+            <span class="visibility-option-hint">
+              Only people you approve can see your profile.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+
+      <p *ngIf="errorMessage" class="auth-error" role="alert">{{ errorMessage }}</p>
+
+      <div class="edit-modal-actions">
+        <button
+          type="button"
+          class="auth-btn-ghost"
+          (click)="closeEdit()"
+          [disabled]="saving || uploadingAvatar"
+        >Cancel</button>
+        <button
+          type="submit"
+          class="auth-btn"
+          [disabled]="saving || uploadingAvatar"
+        >
+          <span *ngIf="!saving">Save</span>
+          <span *ngIf="saving" class="spinner" aria-label="Saving"></span>
+        </button>
+      </div>
+    </form>
   </div>
 </div>

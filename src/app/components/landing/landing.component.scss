@@ -1129,10 +1129,13 @@
 .user-menu-trigger {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 6px 14px;
+  padding: 4px 12px 4px 4px;
   border-radius: $radius-pill;
   cursor: pointer;
   font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
   transition: all $transition-fast;
 
   &:hover {
@@ -1144,6 +1147,36 @@
     outline: 2px solid $brand-cyan-light;
     outline-offset: 2px;
   }
+}
+
+.user-menu-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $meals-coral, color-mix(in srgb, $meals-coral 70%, $brand-cyan-dark));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  color: $text-primary;
+  font-size: 0.8rem;
+  font-weight: $font-weight-bold;
+
+  &.has-image {
+    background: $bg-card;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.user-menu-avatar-initial {
+  line-height: 1;
 }
 
 .user-menu-handle {

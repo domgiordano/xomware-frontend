@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { jwtInterceptor } from './interceptors/jwt.interceptor';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { MonsterComponent } from './components/monster/monster.component';
@@ -39,7 +41,7 @@ import { ProfileComponent } from './components/auth/profile/profile.component';
     ReactiveFormsModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [provideHttpClient(withInterceptors([jwtInterceptor]))],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
