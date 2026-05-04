@@ -1,0 +1,67 @@
+<div class="picker">
+  <!-- Preview -->
+  <div class="preview-row">
+    <div class="preview-circle" [class.has-photo]="activePhoto">
+      <img *ngIf="activePhoto" [src]="activePhoto" alt="" />
+      <app-stock-avatar
+        *ngIf="!activePhoto"
+        [color]="previewColor"
+        [size]="88"
+      ></app-stock-avatar>
+    </div>
+    <div class="preview-meta">
+      <p class="preview-label">{{ previewLabel }}</p>
+      <p class="preview-hint">Pick a color, reuse a past photo, or upload a new one.</p>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-row">
+    <label class="upload-button" [class.disabled]="uploading">
+      {{ uploading ? 'Uploading…' : '+ Upload from device' }}
+      <input
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        (change)="onFileSelected($event)"
+        [disabled]="uploading"
+      />
+    </label>
+    <p *ngIf="uploadError" role="alert" class="upload-error">{{ uploadError }}</p>
+  </div>
+
+  <!-- Stock swatches -->
+  <div class="section">
+    <div class="section-label">Stock</div>
+    <div class="swatch-grid">
+      <button
+        *ngFor="let sw of swatches"
+        type="button"
+        class="swatch"
+        [class.selected]="isStockSelected(sw.hex)"
+        [attr.aria-label]="'Stock avatar ' + sw.label"
+        [attr.aria-pressed]="isStockSelected(sw.hex)"
+        (click)="pickStock(sw.hex)"
+      >
+        <app-stock-avatar [color]="sw.hex" [size]="44"></app-stock-avatar>
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent uploads -->
+  <div *ngIf="history.length > 0" class="section">
+    <div class="section-label">Recent</div>
+    <div class="history-grid">
+      <button
+        *ngFor="let url of history"
+        type="button"
+        class="history-tile"
+        [class.selected]="isPhotoSelected(url)"
+        aria-label="Reuse this photo"
+        [attr.aria-pressed]="isPhotoSelected(url)"
+        (click)="pickPhoto(url)"
+      >
+        <img [src]="url" alt="" />
+      </button>
+    </div>
+  </div>
+</div>

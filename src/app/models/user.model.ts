@@ -18,6 +18,10 @@ export interface UserProfile {
   preferredUsername: string;
   displayName: string;
   avatarUrl: string | null;
+  /** Hex color (`#rrggbb`) for the stock SVG avatar; null when using uploaded photo or app default. */
+  avatarStockColor: string | null;
+  /** Recently-used avatar URLs (most recent first, capped at 6). */
+  avatarHistory: string[];
   profileVisibility: ProfileVisibility;
   bio?: string | null;
   createdAt?: string;
@@ -33,6 +37,7 @@ export interface MinimalUser {
   preferredUsername: string;
   displayName: string;
   avatarUrl: string | null;
+  avatarStockColor: string | null;
   profileVisibility: ProfileVisibility;
 }
 
@@ -42,6 +47,8 @@ export interface EditableFields {
   displayName: string;
   profileVisibility: ProfileVisibility;
   avatarUrl: string | null;
+  /** Hex `#rrggbb` for the stock SVG. Mutually exclusive with avatarUrl. */
+  avatarStockColor: string | null;
   bio: string | null;
 }
 

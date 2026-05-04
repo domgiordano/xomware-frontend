@@ -10,19 +10,19 @@
       <div class="profile-hero">
         <div
           class="profile-avatar-large"
-          [class.has-image]="profile.avatarUrl || pendingAvatarUrl"
+          [class.has-image]="profile.avatarUrl"
           [attr.aria-label]="'Avatar for ' + fallbackDisplayName(profile)"
         >
           <img
-            *ngIf="profile.avatarUrl || pendingAvatarUrl"
-            [src]="pendingAvatarUrl || profile.avatarUrl"
+            *ngIf="profile.avatarUrl"
+            [src]="profile.avatarUrl"
             [alt]="fallbackDisplayName(profile) + ' avatar'"
           />
-          <span
-            *ngIf="!profile.avatarUrl && !pendingAvatarUrl"
-            class="profile-avatar-initial"
-            aria-hidden="true"
-          >{{ avatarInitial(profile) }}</span>
+          <app-stock-avatar
+            *ngIf="!profile.avatarUrl"
+            [color]="profile.avatarStockColor || '#00b4d8'"
+            [size]="120"
+          ></app-stock-avatar>
         </div>
 
         <h1 *ngIf="profile.preferredUsername" class="profile-handle">&#64;{{ profile.preferredUsername }}</h1>
@@ -114,43 +114,16 @@
       class="auth-form edit-modal-form"
       novalidate
     >
-      <!-- Avatar upload -->
-      <div class="auth-field">
+      <!-- Avatar picker — stock colors, recent uploads, device upload -->
+      <div class="auth-field" *ngIf="profile$ | async as p">
         <span class="auth-label">Avatar</span>
-        <div class="avatar-upload-row">
-          <ng-container *ngIf="profile$ | async as p">
-            <div
-              class="profile-avatar-medium"
-              [class.has-image]="pendingAvatarUrl || p.avatarUrl"
-            >
-              <img
-                *ngIf="pendingAvatarUrl || p.avatarUrl"
-                [src]="pendingAvatarUrl || p.avatarUrl"
-                alt=""
-              />
-              <span
-                *ngIf="!pendingAvatarUrl && !p.avatarUrl"
-                class="profile-avatar-initial"
-                aria-hidden="true"
-              >{{ avatarInitial(p) }}</span>
-            </div>
-          </ng-container>
-
-          <label class="auth-btn-ghost avatar-upload-button">
-            <span *ngIf="!uploadingAvatar">
-              {{ pendingAvatarUrl ? 'Choose a different image' : 'Upload new avatar' }}
-            </span>
-            <span *ngIf="uploadingAvatar" class="spinner" aria-label="Uploading"></span>
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              (change)="onAvatarFileSelected($event)"
-              [disabled]="uploadingAvatar || saving"
-              hidden
-            />
-          </label>
-        </div>
-        <span class="auth-hint">PNG, JPG, or WebP. Saved when you press Save.</span>
+        <app-avatar-picker
+          [avatarUrl]="p.avatarUrl"
+          [stockColor]="p.avatarStockColor"
+          [history]="p.avatarHistory || []"
+          [pending]="pendingAvatarChoice"
+          (choiceChange)="onAvatarChoice($event)"
+        ></app-avatar-picker>
       </div>
 
       <!-- Handle -->
@@ -251,12 +224,12 @@
           type="button"
           class="auth-btn-ghost"
           (click)="closeEdit()"
-          [disabled]="saving || uploadingAvatar"
+          [disabled]="saving"
         >Cancel</button>
         <button
           type="submit"
           class="auth-btn"
-          [disabled]="saving || uploadingAvatar"
+          [disabled]="saving"
         >
           <span *ngIf="!saving">Save</span>
           <span *ngIf="saving" class="spinner" aria-label="Saving"></span>
