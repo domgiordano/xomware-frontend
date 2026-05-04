@@ -20,6 +20,8 @@ import { CallbackComponent } from './components/auth/callback/callback.component
 import { ProfileComponent } from './components/auth/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
+import { AvatarPickerComponent } from './components/avatar-picker/avatar-picker.component';
+import { StockAvatarComponent } from './components/avatar-picker/stock-avatar.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { PrivacyComponent } from './components/privacy/privacy.component';
     ProfileComponent,
     AdminComponent,
     PrivacyComponent,
+    AvatarPickerComponent,
+    StockAvatarComponent,
   ],
   imports: [
     BrowserModule,

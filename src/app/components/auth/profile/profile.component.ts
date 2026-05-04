@@ -9,8 +9,8 @@ import {
   ProfileVisibility,
   UserProfile,
 } from '../../../models/user.model';
+import { AvatarChoice } from '../../avatar-picker/avatar-picker.component';
 
-const ALLOWED_AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const MAX_DISPLAY_NAME = 50;
 const HANDLE_REGEX = /^[a-z0-9_]{3,20}$/;
 const RESERVED_HANDLES = new Set([
@@ -39,11 +39,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   editOpen = false;
   saving = false;
-  uploadingAvatar = false;
   errorMessage = '';
 
-  /** Live-preview URL while a freshly-uploaded avatar isn't yet persisted via `edit()`. */
-  pendingAvatarUrl: string | null = null;
+  /** Pending avatar choice (photo URL or stock color) the user hasn't saved yet. */
+  pendingAvatarChoice: AvatarChoice | null = null;
 
   private profileSub?: Subscription;
   private currentProfile: UserProfile | null = null;
@@ -114,7 +113,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   openEdit(): void {
     if (!this.currentProfile) return;
     this.errorMessage = '';
-    this.pendingAvatarUrl = null;
+    this.pendingAvatarChoice = null;
     this.editForm.reset({
       preferredUsername: this.currentProfile.preferredUsername ?? '',
       displayName: this.currentProfile.displayName ?? '',
@@ -124,9 +123,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   closeEdit(): void {
-    if (this.saving || this.uploadingAvatar) return;
+    if (this.saving) return;
     this.editOpen = false;
-    this.pendingAvatarUrl = null;
+    this.pendingAvatarChoice = null;
     this.errorMessage = '';
   }
 
@@ -135,31 +134,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return !!ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched);
   }
 
-  onAvatarFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-      this.errorMessage = 'Avatar must be a PNG, JPG, or WebP image.';
-      input.value = '';
-      return;
-    }
-
-    this.errorMessage = '';
-    this.uploadingAvatar = true;
-    this.users.uploadAvatar(file).subscribe({
-      next: (finalUrl) => {
-        this.pendingAvatarUrl = finalUrl;
-        this.uploadingAvatar = false;
-        input.value = '';
-      },
-      error: () => {
-        this.uploadingAvatar = false;
-        this.errorMessage = 'Avatar upload failed. Please try again.';
-        input.value = '';
-      },
-    });
+  onAvatarChoice(choice: AvatarChoice): void {
+    this.pendingAvatarChoice = choice;
   }
 
   onSubmit(): void {
@@ -184,8 +160,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (newHandle && newHandle !== this.currentProfile?.preferredUsername) {
       payload['preferredUsername'] = newHandle;
     }
-    if (this.pendingAvatarUrl) {
-      payload['avatarUrl'] = this.pendingAvatarUrl;
+    if (this.pendingAvatarChoice?.kind === 'photo') {
+      payload['avatarUrl'] = this.pendingAvatarChoice.url;
+      payload['avatarStockColor'] = null;
+    } else if (this.pendingAvatarChoice?.kind === 'stock') {
+      payload['avatarStockColor'] = this.pendingAvatarChoice.color;
+      payload['avatarUrl'] = null;
     }
 
     this.users.edit(payload).subscribe({
@@ -193,7 +173,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.profileService.setProfile(updated);
         this.saving = false;
         this.editOpen = false;
-        this.pendingAvatarUrl = null;
+        this.pendingAvatarChoice = null;
       },
       error: (err: { status?: number; error?: { error?: string } }) => {
         this.saving = false;
