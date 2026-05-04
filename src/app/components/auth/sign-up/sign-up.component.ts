@@ -87,13 +87,15 @@ export class SignUpComponent {
   }
 
   private friendlyError(err: Error): string {
+    const name = (err as { name?: string }).name || '';
     const msg = err.message || '';
-    if (/UsernameExistsException/i.test(msg))
+    const both = `${name} ${msg}`;
+    if (/UsernameExistsException/i.test(both))
       return 'An account already exists for that email.';
-    if (/InvalidPasswordException/i.test(msg))
+    if (/InvalidPasswordException/i.test(both))
       return 'Password does not meet the requirements.';
-    if (/InvalidParameterException/i.test(msg))
+    if (/InvalidParameterException/i.test(both))
       return 'One of the fields is invalid. Please check and try again.';
-    return 'Something went wrong. Please try again.';
+    return msg ? `${name ? name + ': ' : ''}${msg}` : 'Something went wrong. Please try again.';
   }
 }
