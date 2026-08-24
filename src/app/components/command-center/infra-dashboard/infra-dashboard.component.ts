@@ -28,23 +28,51 @@ export class InfraDashboardComponent implements OnInit {
   resourceFilter = '';
   showOutputs = false;
 
-  // App brand colors
+  // App brand colors.
+  //
+  // Keys are Terraform workspace names (the state-bucket prefixes that
+  // /infra/workspaces enumerates), NOT repo names. Every workspace in
+  // s3://xomware-terraform-state is listed here so none fall through to the
+  // generic xomware blue.
   readonly appColors: Record<string, string> = {
     xomware: '#00b4d8',
     xomify: '#9c0abf',
     xomcloud: '#ff6b35',
     xomper: '#00ffab',
     xomfit: '#ff4d6d',
+    'clt-dynasty-league': '#1d8f5a',
+    xomforms: '#f4a261',
+    xomtracks: '#c77dff',
+    xomcron: '#8d99ae',
+    meals: '#e07a5f',
+    derby: '#7f4f24',
+    'today-in-sports': '#2a9d8f',
+    'hornets-southeast-champs': '#00788c',
+    reeses: '#d95f02',
+    vest: '#5c6bc0',
   };
 
   // Monograms, not emoji — emoji are not used in product UI. These also render
   // consistently across platforms, which the emoji did not.
+  // The slice(0, 2) fallback collides badly: xomcron, xomforms and xomtracks
+  // all render as "XO" and become indistinguishable in the workspace list.
+  // Every workspace gets an explicit, unique monogram.
   readonly appMonograms: Record<string, string> = {
     xomware: 'XW',
     xomify: 'XY',
     xomcloud: 'XC',
     xomper: 'XP',
     xomfit: 'XF',
+    'clt-dynasty-league': 'CD',
+    xomforms: 'XR',
+    xomtracks: 'XT',
+    xomcron: 'XN',
+    meals: 'ML',
+    derby: 'DB',
+    'today-in-sports': 'TS',
+    'hornets-southeast-champs': 'HC',
+    reeses: 'RS',
+    vest: 'VS',
   };
 
   constructor(private infra: InfraService) {}
